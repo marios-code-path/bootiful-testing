@@ -9,13 +9,12 @@
 	<packaging>jar</packaging>
 
 	<name>reservation-client</name>
-	<description>Demo project for Spring Boot</description>
+	<description>HTTP microervice client and contract stub-runner</description>
 
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.10.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+    	<groupId>com.example</groupId>
+    	<artifactId>microservices</artifactId>
+    	<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<properties>
