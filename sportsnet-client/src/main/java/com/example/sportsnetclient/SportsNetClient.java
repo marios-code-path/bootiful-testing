@@ -18,14 +18,15 @@ public class SportsNetClient {
         this.restTemplate = restTemplate;
     }
 
-    @Value("${server.url:http://localhost:8080/players}")
+    @Value("${server.url:http://localhost:8080/team/all}")
     String url;
 
-    public Collection<Player> getAllPlayers() {
+    public Collection<Team> getAllTeams() {
         return restTemplate.exchange(url, HttpMethod.GET, null,
-                new ParameterizedTypeReference<Collection<Player>>() {
+                new ParameterizedTypeReference<Collection<Team>>() {
                 })
                 .getBody();
-
     }
+
+
 }
