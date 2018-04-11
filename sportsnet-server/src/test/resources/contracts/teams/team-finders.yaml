@@ -1,0 +1,20 @@
+description: Team REST
+name: should register a team
+priority: 8
+request:
+  url: /team/new
+  method: PUT
+  body:
+    name: RANGERS
+  matchers:
+    body:
+      - path: $.foo
+        type: by_regex
+        value: bar
+    headers:
+      - key: foo
+        regex: bar
+response:
+  status: 200
+  headers:
+    Content-Type: application/json;charset=UTF-8
