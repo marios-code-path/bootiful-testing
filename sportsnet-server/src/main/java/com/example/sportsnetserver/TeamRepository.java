@@ -9,5 +9,5 @@ public interface TeamRepository extends JpaRepository<Team, Long>{
     @Query("select t from Team t where t.name='RANGERS'")
     public Team findRangers();
 
-    public Collection findTeamsByName(String name);
+    public Collection findByName(String name);
 }

@@ -27,7 +27,7 @@ public class BaseRestTeamContracts {
     public void testShouldReceiveTeams() {
         Team rangers = new Team(1L, "RANGERS");
 
-        given(teamRepo.save(argThat(team -> team!=null && team.getName() != null)))
+        given(teamRepo.save(argThat(team -> team != null && team.getName() != null)))
                 .willReturn(rangers);
         given(teamRepo.findAll())
                 .willReturn(Arrays.asList(
@@ -36,6 +36,8 @@ public class BaseRestTeamContracts {
                 ));
         given(teamRepo.findRangers())
                 .willReturn(rangers);
+        given(teamRepo.findByName(argThat(str -> str != null)))
+                .willReturn(Arrays.asList(new Team(1L, "GIANTS")));
 
         RestAssuredMockMvc.standaloneSetup(teamRestController);
     }

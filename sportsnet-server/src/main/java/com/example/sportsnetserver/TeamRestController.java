@@ -15,8 +15,8 @@ public class TeamRestController {
 
     @GetMapping("/byName/{name}")
     public Collection<Team> getByTeamName(@PathParam("name") String name) {
-        return teamRepository.findTeamsByName(name);
-    };
+        return teamRepository.findByName(name);
+    }
 
     @GetMapping("/rangers")
     public Team getRangers() {
