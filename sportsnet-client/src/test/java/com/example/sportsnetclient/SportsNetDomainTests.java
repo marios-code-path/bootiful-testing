@@ -36,7 +36,7 @@ public class SportsNetDomainTests {
                 new Player(42L, "CAFEBABE")
         ));
 
-        WireMock.stubFor(WireMock.get("/players")
+        WireMock.stubFor(WireMock.get("/team/all")
                 .willReturn(WireMock.aResponse()
                         .withStatus(200)
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)

@@ -11,9 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 
-/**
- * @author <a href="mailto:josh@joshlong.com">Josh Long</a>
- */
 @SpringBootTest
 @RunWith(SpringRunner.class)
 public class BaseClass {
@@ -27,7 +24,8 @@ public class BaseClass {
 	@Before
 	public void before() throws Exception {
 		Mockito.when(this.reservationRepository.findAll())
-				.thenReturn(Arrays.asList(new Reservation(1L, "Jane"), new Reservation(2L, "Josh")));
+				.thenReturn(Arrays.asList(new Reservation(1L, "CAFEDUDE"), new Reservation(2L, "BABE")));
+
 		RestAssuredMockMvc.standaloneSetup(this.controller);
 	}
 }

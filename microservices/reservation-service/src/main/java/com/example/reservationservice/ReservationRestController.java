@@ -5,9 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 
-/**
- * @author <a href="mailto:josh@joshlong.com">Josh Long</a>
- */
 @RestController
 public class ReservationRestController {
 

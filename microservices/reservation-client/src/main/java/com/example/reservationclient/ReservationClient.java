@@ -7,9 +7,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
 
-/**
- * @author <a href="mailto:josh@joshlong.com">Josh Long</a>
- */
 @Component
 public class ReservationClient {
 

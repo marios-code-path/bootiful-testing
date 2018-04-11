@@ -1,5 +1,6 @@
 package com.example.reservationservice;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -12,11 +13,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Arrays;
 import java.util.Collections;
 
-/**
- * @author <a href="mailto:josh@joshlong.com">Josh Long</a>
- */
 @WebMvcTest
 @RunWith(SpringRunner.class)
 public class ReservationRestControllerTest {
@@ -27,17 +26,23 @@ public class ReservationRestControllerTest {
 	@MockBean
 	private ReservationRepository reservationRepository;
 
+	@Before
+	public void setUp() {
+		Mockito.when(reservationRepository.findAll())
+				.thenReturn(
+						Arrays.asList(
+								new Reservation(1L, "CAFEBABE")
+						)
+				);
+	}
+
 	@Test
 	public void getAllReservations() throws Exception {
-
-		Mockito.when(this.reservationRepository.findAll())
-				.thenReturn(Collections.singletonList(new Reservation(1L, "Jane")));
-
 		this.mockMvc
 				.perform(MockMvcRequestBuilders.get("/reservations"))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON_UTF8))
-				.andExpect(MockMvcResultMatchers.jsonPath("@.[0].reservationName").value("Jane"));
+				.andExpect(MockMvcResultMatchers.jsonPath("@.[0].reservationName").value("CAFEBABE"));
 
 	}
 }

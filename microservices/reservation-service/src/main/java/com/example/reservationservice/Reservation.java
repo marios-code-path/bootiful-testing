@@ -8,10 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-/**
- * @author <a href="mailto:josh@joshlong.com">Josh Long</a>
- */
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

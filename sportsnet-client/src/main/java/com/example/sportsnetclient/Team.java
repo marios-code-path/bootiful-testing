@@ -1,13 +1,13 @@
-package com.example.reservationclient;
+package com.example.sportsnetclient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Reservation {
-	private Long id;
-	private String reservationName;
+@Data
+public class Team {
+    Long id;
+    String name;
 }
