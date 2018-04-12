@@ -6,14 +6,6 @@ request:
   method: PUT
   body:
     name: RANGERS
-  matchers:
-    body:
-      - path: $.foo
-        type: by_regex
-        value: bar
-    headers:
-      - key: foo
-        regex: bar
 response:
   status: 200
   headers:

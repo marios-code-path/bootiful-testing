@@ -2,32 +2,33 @@ package com.example.sportsnetserver;
 
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.argThat;
 
 
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 public class BaseRestTeamContracts {
     @Mock
-    TeamRepository teamRepo;
-    @InjectMocks
-    TeamRestController teamRestController;
+    private TeamRepository teamRepo;
 
-    @Test
-    public void testShouldReceiveTeams() {
+    @Before
+    public void setUp() {
+        TeamRestController teamRestController = new TeamRestController(teamRepo);
         Team rangers = new Team(1L, "RANGERS");
 
-        given(teamRepo.save(argThat(team -> team != null && team.getName() != null)))
+        given(teamRepo.save(argThat(team -> (team != null) && (team.getName() != null))))
                 .willReturn(rangers);
         given(teamRepo.findAll())
                 .willReturn(Arrays.asList(
@@ -37,23 +38,9 @@ public class BaseRestTeamContracts {
         given(teamRepo.findRangers())
                 .willReturn(rangers);
         given(teamRepo.findByName(argThat(str -> str != null)))
-                .willReturn(Arrays.asList(new Team(1L, "GIANTS")));
+                .willReturn(Collections.singletonList(new Team(1L, "GIANTS")));
 
         RestAssuredMockMvc.standaloneSetup(teamRestController);
-    }
-
-    private TypeSafeMatcher<Team> teamWithName() {
-        return new TypeSafeMatcher<Team>() {
-            @Override
-            protected boolean matchesSafely(Team teamInput) {
-                return teamInput.getName() != null;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-
-            }
-        };
     }
 
 }

@@ -34,7 +34,8 @@ public class TeamContractStubTests {
         Assertions.assertThat(teams)
                 .as("Teams response has team data.")
                 .isNotNull()
-                .isNotEmpty();
+                .isNotEmpty()
+                .hasSize(2);
 
     }
 

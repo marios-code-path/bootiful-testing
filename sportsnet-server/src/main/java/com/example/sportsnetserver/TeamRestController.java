@@ -1,6 +1,5 @@
 package com.example.sportsnetserver;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
@@ -10,8 +9,12 @@ import java.util.Collection;
 @RequestMapping(path = "/team")
 public class TeamRestController {
 
-    @Autowired
-    TeamRepository teamRepository;
+
+    private final TeamRepository teamRepository;
+
+    public TeamRestController(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
+    }
 
     @GetMapping("/byName/{name}")
     public Collection<Team> getByTeamName(@PathParam("name") String name) {
