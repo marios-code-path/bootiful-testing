@@ -16,13 +16,13 @@ public class TeamRestController {
         this.teamRepository = teamRepository;
     }
 
-    @GetMapping("/byName/{name}")
+    @GetMapping("/{name}")
     public Collection<Team> getByTeamName(@PathParam("name") String name) {
         return teamRepository.findByName(name);
     }
 
-    @GetMapping("/rangers")
-    public Team getRangers() {
+    @GetMapping("/champion")
+    public Team getChampion() {
         return teamRepository.findRangers();
     }
 
@@ -31,9 +31,10 @@ public class TeamRestController {
         return teamRepository.findAll();
     }
 
-    @PutMapping("/new")
-    public Team addTeam(@RequestParam("name")String name) {
-        return teamRepository.save(new Team(null, name));
+    @PostMapping("/new")
+    public Team addTeam(@RequestBody Team team) {
+        team.setId(null);
+        return teamRepository.save(team);
     }
 
 }
