@@ -21,7 +21,6 @@ import java.util.Collection;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-
 @AutoConfigureStubRunner(ids = "com.example:reservation-service:+:8080", workOffline = true)
 public class ReservationClientTest {
 
