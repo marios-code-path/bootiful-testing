@@ -24,7 +24,7 @@ public class BaseClass {
 	@Before
 	public void before() throws Exception {
 		Mockito.when(this.reservationRepository.findAll())
-				.thenReturn(Arrays.asList(new Reservation(1L, "CAFEDUDE"), new Reservation(2L, "BABE")));
+				.thenReturn(Arrays.asList(new Reservation(1L, "CAFEBABE"), new Reservation(2L, "CAFEDUDE")));
 
 		RestAssuredMockMvc.standaloneSetup(this.controller);
 	}

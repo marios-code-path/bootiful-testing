@@ -1,5 +1,4 @@
 import org.springframework.cloud.contract.spec.Contract
-import org.springframework.cloud.contract.spec.internal.MediaTypes
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 
@@ -11,7 +10,7 @@ Contract.make {
     }
     response {
         status 200
-        body([[id: 1L, reservationName: "CAFEDUDE"], [id: 2L, reservationName: "CAFEDUDE"]])
+        body([[id: 1L, reservationName: "CAFEBABE"], [id: 2L, reservationName: "CAFEDUDE"]])
         headers {
             header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
         }
