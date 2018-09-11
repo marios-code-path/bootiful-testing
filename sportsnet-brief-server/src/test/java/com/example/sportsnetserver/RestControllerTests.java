@@ -22,7 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
-@AutoConfigureMockMvc
 @AutoConfigureJsonTesters
 public class RestControllerTests {
 
@@ -51,7 +50,7 @@ public class RestControllerTests {
     }
 
     @Test
-    public void testShouldGETRangers() throws Exception {
+    public void testShouldGETFavorite() throws Exception {
         mockMvc.perform(get("/team/favorite"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))

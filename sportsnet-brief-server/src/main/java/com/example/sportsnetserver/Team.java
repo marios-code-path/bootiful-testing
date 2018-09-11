@@ -10,7 +10,8 @@ import javax.persistence.Id;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data @Entity
+@Data
+@Entity
 public class Team {
     @Id
     @GeneratedValue
