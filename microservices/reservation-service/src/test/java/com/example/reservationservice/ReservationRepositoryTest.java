@@ -23,7 +23,7 @@ public class ReservationRepositoryTest {
 
     @Before
     public void setUp() {
-        testEntityManager.persist(new Reservation(null, "CAFEBABE"));
+        testEntityManager.persist(new Reservation(null, "CAFE"));
     }
 
     @Test
@@ -32,7 +32,7 @@ public class ReservationRepositoryTest {
         Collection<Reservation> rs = this.repo.findAllCafeBabe();
         Assertions.assertThat(rs.size()).isEqualTo(1);
         Assertions.assertThat(rs.iterator().next().getId()).isNotNull();
-        Assertions.assertThat(rs.iterator().next().getReservationName()).isEqualTo("CAFEBABE");
+        Assertions.assertThat(rs.iterator().next().getReservationName()).isEqualTo("CAFE");
     }
 }
 

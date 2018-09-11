@@ -11,11 +11,6 @@ public class ReservationTest {
 	public void create() throws Exception {
 
 		Reservation reservation = new Reservation(1L, "Josh");
-		//Assert.assertEquals("aJosh", reservation.getName());
-//		Assert.assertThat(reservation.getId(), Matchers.allOf(
-//				Matchers.notNullValue(),
-//				Matchers.is(2L)
-//		));
 		Assertions.assertThat(reservation)
 				.as("Reservation was created/constructed")
 				.isNotNull();

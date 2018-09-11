@@ -16,6 +16,12 @@ public class TeamRestController {
         this.teamRepository = teamRepository;
     }
 
+    @GetMapping("/all")
+    public Collection<Team> getAllTeams() {
+        return teamRepository.findAll();
+    }
+
+    // The Long VERSION
     @GetMapping("/{name}")
     public Collection<Team> getByTeamName(@PathParam("name") String name) {
         return teamRepository.findByName(name);
@@ -26,10 +32,6 @@ public class TeamRestController {
         return teamRepository.findRangers();
     }
 
-    @GetMapping("/all")
-    public Collection<Team> getAllTeams() {
-        return teamRepository.findAll();
-    }
 
     @PostMapping("/new")
     public Team addTeam(@RequestBody Team team) {

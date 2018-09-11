@@ -12,21 +12,31 @@ import java.util.Collection;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@AutoConfigureStubRunner(ids = "com.example:reservation-service:+:8080", workOffline = true)
+//@AutoConfigureStubRunner(ids = "com.example:reservation-service:+:8080", workOffline = true)
 public class ReservationClientTest {
 
     @Autowired
     private ReservationClient client;
 
     @Test
+    public void testShouldConstruct() {
+        Reservation res = new Reservation(1L, "MARIO");
+
+        Assertions.assertThat(res)
+                .as("should have constructed")
+                .isNotNull()
+                .hasNoNullFieldsOrProperties();
+    }
+
+    @Test
     public void getReservations() throws Exception {
 
         Collection<Reservation> res = this.client.getReservations();
-        Assertions.assertThat(res.size()).isEqualTo(2);
+        Assertions.assertThat(res.size()).isEqualTo(1);
 
         Assertions.assertThat(
                 res.stream()
-                        .filter(r -> r.getReservationName().equalsIgnoreCase("CAFEBABE"))
+                        .filter(r -> r.getReservationName().equalsIgnoreCase("CAFE"))
                         .count()
         ).isEqualTo(1);
     }

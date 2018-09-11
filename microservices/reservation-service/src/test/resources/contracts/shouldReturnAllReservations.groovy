@@ -10,7 +10,7 @@ Contract.make {
     }
     response {
         status 200
-        body([[id: 1L, reservationName: "CAFEBABE"], [id: 2L, reservationName: "CAFEDUDE"]])
+        body([[id: 1L, reservationName: "CAFE"]])
         headers {
             header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_UTF8_VALUE)
         }

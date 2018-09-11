@@ -67,7 +67,7 @@ public class RestControllerTests {
     }
 
     @Test
-    public void testShouldPstNewTeam() throws Exception {
+    public void testShouldPostNewTeam() throws Exception {
         String requestJson = objectMapper.writeValueAsString(new Team(null, "RANGERZ"));
 
         mockMvc.perform(post("/team/new")
