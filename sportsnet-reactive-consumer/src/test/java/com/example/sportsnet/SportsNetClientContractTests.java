@@ -1,4 +1,4 @@
-package com.sportsnet;
+package com.example.sportsnet;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

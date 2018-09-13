@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Team {
-    Long id;
+    String id;
     String name;
 }
