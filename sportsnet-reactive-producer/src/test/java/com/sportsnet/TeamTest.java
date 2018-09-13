@@ -1,15 +1,59 @@
 package com.sportsnet;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.Test;
+import reactor.core.publisher.Flux;
+import reactor.test.StepVerifier;
+
+import java.time.Duration;
+import java.util.Date;
 
 
 public class TeamTest {
 
+    private final Team myTeam = new Team("1903", "Beşiktaş");
+
     @Test
     public void create() throws Exception {
-        Team team = new Team("1903", "Beşiktaş");
-        Assertions.assertThat(team.getId()).isEqualToIgnoringWhitespace("1903");
-        Assertions.assertThat(team.getName()).isEqualToIgnoringWhitespace("Beşiktaş");
+
+        Assertions.assertThat(myTeam.getId()).isEqualToIgnoringWhitespace("1903");
+        Assertions.assertThat(myTeam.getName()).isEqualToIgnoringWhitespace("Beşiktaş");
+    }
+
+    @Test
+    public void testShouldStepVerify() throws Exception {
+        StepVerifier.create(Flux.just(myTeam.getId(), myTeam.getName()))
+                .expectNext("1903", "Beşiktaş")
+                .expectComplete()
+                .verify();
+    }
+
+    private int size = 2;
+
+    @Test
+    public void works() {
+        StepVerifier.withVirtualTime(() -> Flux.interval(Duration.ofMillis(10000))
+                .map(tick -> new Date())
+                .take(size)
+                .collectList()
+        )
+                .thenAwait(Duration.ofMillis(2000))
+                .expectNoEvent(Duration.ofMillis(1000))
+                .thenAwait(Duration.ofHours(2))
+                .consumeNextWith(list -> Assert.assertTrue(list.size() == size))
+                .verifyComplete();
+    }
+
+    @Test
+    public void hangs() {
+        StepVerifier.withVirtualTime(() -> Flux.interval(Duration.ofMillis(1))
+                .map(tick -> new Date())
+                .take(size)
+                .collectList()
+        )
+                .thenAwait(Duration.ofHours(1000))
+                .consumeNextWith(list -> Assert.assertTrue(list.size() == size))
+                .verifyComplete();
     }
 }
