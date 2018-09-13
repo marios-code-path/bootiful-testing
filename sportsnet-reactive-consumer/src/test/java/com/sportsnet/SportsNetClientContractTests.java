@@ -1,8 +1,5 @@
 package com.sportsnet;
 
-import com.example.sportsnet.SportsNetClient;
-import com.example.sportsnet.SportsNetClientApp;
-import com.example.sportsnet.Team;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +15,7 @@ import reactor.test.StepVerifier;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @RunWith(SpringRunner.class)
 @Import({SportsNetClientApp.class, SportsNetClient.class})
-@AutoConfigureStubRunner(ids = "com.example:producer:+:8080",
+@AutoConfigureStubRunner(ids = "com.example.sportsnet:reactive-producer:+:8080",
         stubsMode = StubRunnerProperties.StubsMode.LOCAL)
 public class SportsNetClientContractTests {
     @Autowired
@@ -29,8 +26,8 @@ public class SportsNetClientContractTests {
         Flux<Team> customers = this.client.getAllTeams();
         StepVerifier
                 .create(customers)
-                .expectNext(new Team(1L, "REDS"))
-                .expectNext(new Team(2L, "BLUES"))
+                .expectNext(new Team("1", "REDS"))
+                .expectNext(new Team("2", "BLUES"))
                 .verifyComplete();
     }
 

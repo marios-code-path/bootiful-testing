@@ -3,13 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.example</groupId>
-	<artifactId>consumer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+    <groupId>com.example.sportsnet</groupId>
+    <artifactId>reactive-consumer</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
-	<name>consumer</name>
-	<description>Demo project for Spring Boot</description>
+	<name>sportsnet-consumer</name>
+	<description>Sportsnet Consumer Application Reactive style</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
