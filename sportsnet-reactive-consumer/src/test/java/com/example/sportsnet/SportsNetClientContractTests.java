@@ -21,13 +21,13 @@ public class SportsNetClientContractTests {
     @Autowired
     SportsNetClient client;
 
-    @Test
+   @Test
     public void testShouldFetchTeams() {
         Flux<Team> customers = this.client.getAllTeams();
         StepVerifier
                 .create(customers)
                 .expectNext(new Team("1", "REDS"))
-                .expectNext(new Team("2", "BLUES"))
+                .expectNext(new Team("2", "BLUESS"))
                 .verifyComplete();
     }
 

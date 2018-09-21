@@ -22,11 +22,13 @@ public class TeamTest {
     }
 
     @Test
-    public void testShouldStepVerify() throws Exception {
+    public void testShouldStepVerifyTeams() throws Exception {
         StepVerifier.create(Flux.just(myTeam.getId(), myTeam.getName()))
                 .expectNext("1903", "Beşiktaş")
                 .expectComplete()
-                .verify();
+                .verifyThenAssertThat()
+                .hasNotDroppedElements();
+
     }
 
     private int size = 2;
@@ -41,18 +43,6 @@ public class TeamTest {
                 .thenAwait(Duration.ofMillis(2000))
                 .expectNoEvent(Duration.ofMillis(1000))
                 .thenAwait(Duration.ofHours(2))
-                .consumeNextWith(list -> Assert.assertTrue(list.size() == size))
-                .verifyComplete();
-    }
-
-    @Test
-    public void hangs() {
-        StepVerifier.withVirtualTime(() -> Flux.interval(Duration.ofMillis(1))
-                .map(tick -> new Date())
-                .take(size)
-                .collectList()
-        )
-                .thenAwait(Duration.ofHours(1000))
                 .consumeNextWith(list -> Assert.assertTrue(list.size() == size))
                 .verifyComplete();
     }

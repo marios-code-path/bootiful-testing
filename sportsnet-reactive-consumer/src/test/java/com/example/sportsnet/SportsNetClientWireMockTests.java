@@ -3,9 +3,13 @@ package com.example.sportsnet;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
@@ -39,7 +43,7 @@ public class SportsNetClientWireMockTests {
         Flux<Team> customers = this.client.getAllTeams();
         StepVerifier
                 .create(customers)
-                .expectNext(new Team("1", "REDS"))
+                .expectNext(new Team("1", "REDSS"))
                 .expectNext(new Team("2", "BLUES"))
                 .verifyComplete();
     }

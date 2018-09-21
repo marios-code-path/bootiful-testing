@@ -13,14 +13,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Flux;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = "server.port=0")
+@SpringBootTest(properties = {"server.port=0"}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BaseClass {
 
     @LocalServerPort
     private int port;
 
     @Configuration
-    @Import(SportsNetProducerApp.class)
+    @Import(SportsNetWebConfig.class)
     public static class TestConfiguration {
     }
 
@@ -34,7 +34,7 @@ public class BaseClass {
 
         Mockito
                 .when(this.repository.findAll())
-                .thenReturn(Flux.just(new Team("1", "BLUES"), new Team("2", "REDS")));
+                .thenReturn(Flux.just(new Team("1", "REDS"), new Team("2", "BLUES")));
 
     }
 }

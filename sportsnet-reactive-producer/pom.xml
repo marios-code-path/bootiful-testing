@@ -61,6 +61,11 @@
             <artifactId>spring-cloud-starter-contract-verifier</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <dependencyManagement>

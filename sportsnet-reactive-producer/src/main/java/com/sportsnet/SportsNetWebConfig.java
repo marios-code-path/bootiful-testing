@@ -18,12 +18,13 @@ public class SportsNetWebConfig {
 
     @Bean
     RouterFunction<ServerResponse> routes(TeamRepository cr) {
-        return route(GET("/teams/all"), r -> ServerResponse.ok().body(cr.findAll(), Team.class));
+        return
+                route(GET("/teams/all"), r -> ServerResponse.ok().body(cr.findAll(), Team.class))
+                .and(route(GET("/teams/favorite"), r -> ServerResponse.ok().body(cr.getMyFavorites(), Team.class)));
     }
 
     // Require when executing stand-alone only!
-    @Profile("populate")
-    @Bean
+    // @Bean
     ApplicationRunner runner(TeamRepository cr) {
         return args ->
                 cr
