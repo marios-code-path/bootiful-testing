@@ -5,7 +5,7 @@ title = "Testing Reactive Cloud Apps with SpringBoot"
 description = "Use Spring-boot 2.x to verify test stages of your WebFlux and Reactive Data Apps"
 toc = true
 categories = ["reactive", "webflux", "spring", "testing", "bootifultest"]
-tags = ["reactive", "test", "java", "spring", "web", "demo"]
+tags = ["reactive", "test", "java", "spring", "web", "demo","producer","cdct"]
 +++
 
 # The Producer Environment
