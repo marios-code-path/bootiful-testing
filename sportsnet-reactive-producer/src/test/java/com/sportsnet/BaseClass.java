@@ -36,5 +36,9 @@ public class BaseClass {
                 .when(this.repository.findAll())
                 .thenReturn(Flux.just(new Team("1", "REDS"), new Team("2", "BLUES")));
 
+        Mockito
+                .when(this.repository.getMyFavorites())
+                .thenReturn(Flux.just(new Team("2", "BLUES")));
+
     }
 }

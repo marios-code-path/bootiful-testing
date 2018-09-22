@@ -10,9 +10,17 @@ tags = ["reactive", "test", "java", "spring", "web", "demo","producer","cdct"]
 
 # The Producer Environment
 
-Lets setup our domain, and provide tests. Because who doesnt like fdata tests?
+In the world of testing, we dont need much inspiration to get the job  done. However, when it comes to *what* to use, you may be left wandering whether you'll hit all of the right frameworks and tools to validate your business code. Also likely, you'll also need to figure out how to cross validate a producer app with a consumer app(s) that you may not even own!
 
-In order to make this work, we will need the following Team data class.
+This article will go into detail to show tools and techniques you'll likely need during your journey to satisfactory test coverage. Well written tests and coverage, means giving other developers the opportunity to make good decisions about what happens in later iterations.
+
+Lets start with a simple app: we want to store and query sports teams into MongoDB. Furthermore, this needs to be exposed with RESTful API. So specifically we want to leverage JSON object mapping, HTTP services, Data Repositories, etc.. We'll tackle the producer side here which is fancy for `"The server side"` usually.
+
+## The Data Domain
+
+To start, we'll need a model or domain., The following Team data class describes our data succinctly.
+
+Team.java:
 
 ```java
 @Document
@@ -26,9 +34,9 @@ public class Team {
 }
 ```
 
-Its not a lot, but this should let us get started with the application and techniques at hand. What we're interested next is testing this repository and data. We will need to answer questions such as: Will our data get saved as it should (i.e not consistent state), and will our repository find the right collection items? How should one verify that? Lets take a look at a reactive testing componnet that makes doing this expectation-oriented work easier.
+Its not a lot, but this should let us get started with the application and techniques at hand. What we're interested next is testing data, and whether it can handle being composed or altered with consistency. We will need to answer questions such as: Will our data get saved as it should (i.e not consistent state), and will our repository find the right collection items? How should one verify that? Lets take a look at a reactive testing componnet that makes doing this expectation-oriented work easier.
 
-# Reactive Stream StepVerifier
+## Imperative Test Assertions
 
 The following two tests take care of the question whether our data classes can be properly handled without side-effects. To do this, we can test both cases - imperative access, and reactive access.
 
@@ -48,11 +56,13 @@ public class TeamTest {
 //...
 ```
 
-Then we can verify that our objects can be accessed through reactive methods. And this is where we take extra steps in describing the reactive StepVerifier. The StepVerifier will help us understand how our
+## The Reactive StepVerifier
+
+Then we can verify that our objects are accessible through reactive methods. And this is where we take extra steps in describing the reactive StepVerifier. The StepVerifier will help us understand how our
 data gets processed in each step of an reactive stream. We really have 2 options in creating the first step of the verification process. In this example, we use `create(Flux[N])` method to push our one data element
 into a stream with expectations that our one element is observed before a completion signal gets sent to downstream subscribers.
 
-It should be noted that calling of `verify()`, `verifyThenAssertThat()`, `verify(Duration)` triggers the verification of all expectations above it. Additionally we put `expectComplete()` above verify to denote that we expect the subscription to be closed. Note that we could easily replace these 2 functions with `verifyComplete()` and is trivial to change unless you have additional concerns in mind between completion and verification.
+It should be noted that calling of `verify()`, `verifyThenAssertThat()`, `verify(Duration)` triggers the verification of all expectations above it. Additionally we put `expectComplete()` above verify to denote that we expect the subscription to be closed. Note that we could easily replace these 2 functions with `verifyComplete()` and is trivial to change, but this is good to know in case you have additional concerns in mind between stream completion and verification.
 
 ```java
 //...
@@ -66,9 +76,9 @@ It should be noted that calling of `verify()`, `verifyThenAssertThat()`, `verify
 }
 ```
 
-# Adding a Persistence Layer (to Test)
+# Adding a Persistence Layer (Prod)
 
-Lets move from ordinary state tests to the world of data persistence testing. Firstly, our repo will use MongoDB. We can interact with our data by specifying the data and ID types to the [RectiveMongoRepository](https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/repository/ReactiveMongoRepository.html) interface. This interface lets us compose mongodb queries similar to ordinary [JPARepository](https://docs.spring.io/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html) style repositories.
+Lets move from ordinary state and imperative knowledge, to the world of data persistence. Our repository will be constructed from the reactive MongoDB variety. We can interact with our data by specifying the data and ID types to the [RectiveMongoRepository](https://docs.spring.io/spring-data/mongodb/docs/current/api/org/springframework/data/mongodb/repository/ReactiveMongoRepository.html) interface. This interface also lets us compose mongodb queries to fetch and extract our data.
 
 ```java
 interface TeamRepository extends ReactiveMongoRepository<Team, String> {
@@ -80,13 +90,13 @@ interface TeamRepository extends ReactiveMongoRepository<Team, String> {
 ```
 
 In addition to the above mentioned query, we also get the complete host of Spring Data Repository operations.
-adding our `getMyFavorites()` query is contributing variance which we will need to test. In contrast, our `getTeamByName` method consumes the invariant query pattern supported by Spring Data Repositories; testing it is redundant (given Repository test coverage at Spring is up to snuff).
+adding our `getMyFavorites()` query is contributing variance which we will need to test. In contrast, our `getTeamByName` method consumes the invariant query pattern supported by Spring Data Repositories; testing it is redundant - given this functionaly is already well tested.
 
 ## Sliced Framework Tests
 
-Make your data tests run quickly by slicing up the Spring Context at startup time. This can be done using [Spring Test Slices]() and extending your slice (framework test dependency exclusions were introduced in Spring Boot 1.4) to meet your needs during that phase of the test. We can objserve this  with [DataMongoTest]() which provided just the mongodb testing supports used in the next few units. It requires a very simple test context bootstrap, followed by specific exclusions that are selective eliminations of our full path-scaning behaviour. Finally, it adds just `spring-mongo` framework resources to component scan.
+Make your data tests run quickly by slicing up the Spring Context at startup time. This can be done using [Spring Test Slices](https://spring.io/blog/2016/08/30/custom-test-slice-with-spring-boot-1-4) and extending your slice (framework test dependency exclusions were introduced in Spring Boot 1.4) to meet your needs during that phase of the test. We can objserve this  with [DataMongoTest](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/autoconfigure/data/mongo/DataMongoTest.html) which provided just the mongodb testing supports used in the next few units. It requires a very simple test context bootstrap, followed by specific exclusions that are selective eliminations of our full path-scaning behaviour. Finally, it adds just `spring-mongo` framework resources to component scan.
 
-We can explore this [DataMongoTest]() further, by examining inside the DataMongoTest declaration:
+We can explore this `DataMongoTest` annotation further, by examining it's declaration.
 
 DataMongotest.java:
 
@@ -105,11 +115,26 @@ public @interface DataMongoTest {
     //...
 ```
 
-As in many test slices, the use of the provided [Auto Configured Tests](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html#boot-features-testing-spring-boot-applications-testing-autoconfigured-tests) helps specify specific feature "slices" we want to re-use. Thusly the `@DataMongoTest` is limited to just Cache ( in which NONE is default ), and Mongo-related data ( E.G. `@Document`, `DataMongoRepository` ) resources.
+This test slice is a composition of: a standard bootstrap context (the `@BootstrapWith(SpringBootTestContextBootstrapper.class)`), an [TypeExclusionFilter](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/context/TypeExcludeFilter.html) to inhibit autoscanning of any non Data/Mongo configurations. And Finally several "slices" (like modules in Guice) - autoconfigurations for Cache, and MongoDB.
 
-## Talking to MongoDB during test
+The use of the provided [Auto Configured Tests](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html#boot-features-testing-spring-boot-applications-testing-autoconfigured-tests) helps specify specific feature "slices" we want to re-use. Thusly the `@DataMongoTest` is limited to just Cache ( in which NONE is default ), and Mongo-related data ( E.G. `@Document`, `DataMongoRepository` ) resources.
 
-Lets look at the what data tests will look like. The `@DataMongoTest` class shows us we can expect any mongo based framework components and resources - network resources - to get configured. An embedded instance can be setup with the [Embedmongo.flapdoodle.de](https://flapdoodle-oss.github.io/de.flapdoodle.embed.mongo/) plugin, if any are on the classpath. Otherwise, expect to stand up a single mongodb instance for local connections.
+    NOTE: Test slices like `@DataMongoTest` can be tweaked/extended, or you can work your own conveinient slice for the resources that make most sense to your application.
+
+The end result is always that our application context will contain only components needed to execute a certain test or test suite. This is like enforcing separation of concerns ( dont test data when testing web) and allows developers to concentrate on the layer of our app in which test test must validate.
+
+## Embedding MongoDB During Test
+
+Lets look at the what our persistence tests will look like. The `@DataMongoTest` class shows us we can expect any mongo based framework components and resources - network resources - to get configured. An embedded instance can be setup with the [Embedmongo.flapdoodle.de](https://flapdoodle-oss.github.io/de.flapdoodle.embed.mongo/) plugin, if any are on the classpath. Otherwise, expect to stand up a single mongodb instance for local connections to test with.
+
+Installing Mongodb locallay with Homebrew:
+
+```sh
+$ brew install mongodb
+$ brew services start mongodb
+==> Successfully started `mongodb` (label: homebrew.mxcl.mongodb)
+$ # ahhh
+```
 
 Lets consider the following maven build (pom.xml) dependency needed to get the `Embedmongo` plugin working:
 
@@ -117,7 +142,6 @@ Lets consider the following maven build (pom.xml) dependency needed to get the `
 <dependency>
  <groupId>de.flapdoodle.embed</groupId>
  <artifactId>de.flapdoodle.embed.mongo</artifactId>
- <version>2.0.3-SNAPSHOT</version>
  <scope>test</scope>
 </dependency>
 ```
@@ -162,11 +186,15 @@ public class TeamRepositoryTest {
 }
 ```
 
+This `testShouldFetchFavorites` unit simply interacts with mongo to store state, and retrieve it. We are able to compose a relatively simple reactive stream, and verify that our data made it into mongo, and back without side-effects.
+
+The [RunWith(SpringRunner.class)](http://junit.sourceforge.net/javadoc/org/junit/runner/RunWith.html) annotation tells JUnit to start spring-dependency injection and auto-scanning for our test. It is a convienence of manually configuring the [SpringJUnit4ClassRunner](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/context/junit4/SpringJUnit4ClassRunner.html) done in prior versions of Spring.
+
 This `@DataMongoTest` will get executed against the in-memory mongo instance we configured earlier. Thus no actual state is kept. On the other hand, if you're using real instances, you'll need to ensure that this data gets deleted each time.
 
 # The WebFluxTest
 
-Now to the RESTful HTTP services. We want to ultimately expose our data to web clients. We can acheive this in the reactive world with `WebFlux`. Lets put together a single endpoint to use as our entry point.
+Now to the RESTful HTTP services. We want to ultimately expose our data to web clients. We can acheive this in the reactive world with [WebFlux](https://docs.spring.io/spring/docs/current/spring-framework-reference/web-reactive.html). Lets put together a couple of endpoints to access our app in test (and prod).
 
 ```java
 @Configuration
@@ -174,18 +202,21 @@ public class SportsNetWebConfig {
 
     @Bean
     RouterFunction<ServerResponse> routes(TeamRepository cr) {
-        return route(GET("/teams/all"), r -> ServerResponse.ok().body(cr.findAll(), Team.class));
+        return
+                route(GET("/teams/all"), r -> ServerResponse.ok().body(cr.findAll(), Team.class))
+                .and(route(GET("/teams/favorite"), r -> ServerResponse.ok().body(cr.getMyFavorites(), Team.class)));
+
     }
 }
 ```
 
-In this service, we use programmatic functional interfaces to delcare our HTTP endpoints. Here we simply route `"teams/all"` to an OK response with a body continaing the JSON output of our `findAll()` repository method.
+In this service, we use programmatic functional interfaces to declare our HTTP endpoints. Here we simply route `"teams/all"` to an OK response with a body continaing the JSON output of our `findAll()` repository method. Similarly, the `"/teams/favorite"` will route to the JSON output of our `getMyFavorites()` repository method.
 
 ## The WebFlux Test Slice
 
-Similar to `@DataMongoTest` slice in which the DATA stack is sliced out and exposed exclusively, we have a test slice that exhibits similar behaviour for the Web stack. Lets look into this annotation to see what it gives us.
+Similar to `@DataMongoTest` slice in which the data stack is sliced out and exposed exclusively, we have a test slice that exhibits similar behaviour for the Web stack. Lets look into this annotation to see what it gives us.
 
-Using the [@WebFluxTest](https://docs.spring.io/autorepo/docs/spring-boot/current/api/org/springframework/boot/test/autoconfigure/web/reactive/WebFluxTest.html) meta annotation gives us our WebFlux HTTP service capability, a Json Object Mapper and a client among other web related components. To see what this looks like, we'll check into the `@WebFluxTest` code for clues.
+Using the [@WebFluxTest](https://docs.spring.io/autorepo/docs/spring-boot/current/api/org/springframework/boot/test/autoconfigure/web/reactive/WebFluxTest.html) meta annotation gives us our WebFlux HTTP service capability, a Json Object Mapper and a client among other web related components. To see what this looks like, we'll check into the `@WebFluxTest` code.
 
 ```java
 @Target(ElementType.TYPE)
@@ -202,11 +233,15 @@ Using the [@WebFluxTest](https://docs.spring.io/autorepo/docs/spring-boot/curren
 public @interface WebFluxTest {
 ```
 
-Without going into too much detail, we can describe this class as a slice which gives us our standard bootstrap context, in addition to autoscanned WebFlux-friendly components ( @Controller's , @Converter's, WebfluxConfigurer ) we get test WebFlux support through [@AutoConfigureWebFlux](https://docs.spring.io/autorepo/docs/spring-boot/current/api/org/springframework/boot/test/autoconfigure/web/reactive/AutoConfigureWebFlux.html) and the [@AutoConfigureWebTestClient](https://docs.spring.io/autorepo/docs/spring-boot/current/api/org/springframework/boot/test/autoconfigure/web/reactive/AutoConfigureWebTestClient.html) provides a configured [WebTestClient](https://docs.spring.io/spring-framework/docs/5.0.2.BUILD-SNAPSHOT/javadoc-api/org/springframework/test/web/reactive/server/WebTestClient.html) which if used as is, connects to a standard running 'LIVE' server.
+Without going into too much detail, we can describe this class as a slice which gives us our bootstrapped `WebFluxTestContextBootstrapper` context, in addition to autoscanned WebFlux-friendly components ( @Controller's , @Converter's, WebfluxConfigurer ) through it's `ExclusionFilter` [WebFluxTypeExcludeFilter]() we get test WebFlux support through [@AutoConfigureWebFlux](https://docs.spring.io/autorepo/docs/spring-boot/current/api/org/springframework/boot/test/autoconfigure/web/reactive/AutoConfigureWebFlux.html) and the [@AutoConfigureWebTestClient](https://docs.spring.io/autorepo/docs/spring-boot/current/api/org/springframework/boot/test/autoconfigure/web/reactive/AutoConfigureWebTestClient.html) provides a configured [WebTestClient](https://docs.spring.io/spring-framework/docs/5.0.2.BUILD-SNAPSHOT/javadoc-api/org/springframework/test/web/reactive/server/WebTestClient.html) which if used as is, connects to a standard running 'LIVE' server.
 
 ## Our WebFlux Test
 
 ```java
+@WebFluxTest
+@Import(SportsNetWebConfig.class)
+@RunWith(SpringRunner.class)
+public class SportsNetWebTest {
 
     @Autowired
     private SportsNetWebConfig webConfig;
@@ -234,18 +269,18 @@ Without going into too much detail, we can describe this class as a slice which 
 }
 ```
 
-The major difference being a lack of backing data layer, and to get around this we must mock our repository beans with [@MockBean]() annotation. Then setup our mock stubs inside a `@before` clause or even on top of the unit itself. This setup simply interacts with [Mockito]() directly and lets us define the mock behavior of our repository.
+Due to exluion filters - neither did we didnt add any test data layer slice - there is no backing data layer for real per-se, a lack of persistence. To aleiviate this we can use [Mockito](https://site.mockito.org/) to mock and stub our data repositories. Here, we'll mock our team `TeamRepository` beans using the [@MockBean](https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/mock/mockito/MockBean.html) annotation. Then setup our mock stubs inside a `@before` clause or even on top of the unit itself. This setup simply interacts with `Mockito` directly and lets us define the behavior of our repository.
 
 ## The WebTestClient
 
-In this example, we want to test our HTTP controller (routes) but not connect to a live server. The `WebTestClient` allows mocked `exchange` request/respondses by exposing multiple [bindToXxx]() methods. How this works is outlined in the [Spring Framework Reference](https://docs.spring.io/spring/docs/current/spring-framework-reference/pdf/testing.pdf#mock-objects-web-reactive):
+In this example, we want to test our HTTP controller (routes) but not connect to a live server. The `WebTestClient` allows mocked `exchange` request/respondses by exposing multiple [bindToXxx](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/web/reactive/server/WebTestClient.html#bindToApplicationContext-org.springframework.context.ApplicationContext-) methods. This lets us bind our client to specific points in our web application for example ; [Controllers](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/web/reactive/server/WebTestClient.html#bindToController-java.lang.Object...-), [RouterFunctions](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/web/reactive/server/WebTestClient.html#bindToRouterFunction-org.springframework.web.reactive.function.server.RouterFunction-), etc... Our Sample will bind to the RouterFunction we defined in our REST service earlier. For more information on `WebTestClient` binding options, see  the [Spring Framework Reference](https://docs.spring.io/spring/docs/current/spring-framework-reference/pdf/testing.pdf#mock-objects-web-reactive):
 
     The package `org.springframework.mock.http.server.reactive` contains mock implementations of
     `ServerHttpRequest` and `ServerHttpResponse` for use in WebFlux applications. The package
     `org.springframework.mock.web.server` contains a mock `ServerWebExchange` that depends on those
     mock request and response objects.
 
-The big win here, is we get to talk to our web services without holding ip a TCP connection, while in the process making our tests faster to execute.
+By exposing the underpinnnings of our service application, we get to talk to our RESTful endpoints without spinning up any additional resources, while in the process making our tests faster to execute, this adds to make our tests less complicated.
 
 ```java
 
@@ -267,7 +302,7 @@ The big win here, is we get to talk to our web services without holding ip a TCP
     }
 ```
 
-Running the `bindToRouterFunction()` requires our injection instance of WebConfig.java.  Once `built()`, we are able to specify METHOD and URI. Upon `Exchange`, you will find that we can begin issuing our test expectations. In this case, a Fluent API is returned in the form of a [ResponseSpec](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/web/reactive/server/WebTestClient.ResponseSpec.html) that we then use to plug in our expectations.  Specifically, if not especially worth noting with JSON response, we can use the `jsonPath` queries to identify body characteristics. This feature stems from the re-use of [com.jayway](https://github.com/json-path/JsonPath) [JSONPath](http://goessner.net/articles/JsonPath/) evaluator.
+Our client is ready after calling `build()`. We can then specify the request/response expections that will get invocated to our `RouterFunction`. Calling `Exchange` with the `WebTestClient`, will allow us to assemble the assertion path. This [WebTestClient.ResponseSpec](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/web/reactive/server/WebTestClient.ResponseSpec.html) provides a fluent API that we then use to plug in our expectations.  Specially worth mentioning is th use of JSON-specific expressions using via `jsonPath` queries to identify body characteristics. This feature stems from the re-use of [com.jayway](https://github.com/json-path/JsonPath) [JSONPath](http://goessner.net/articles/JsonPath/) evaluator.
 
 ## Testing Web with StepVerifier
 
@@ -295,7 +330,8 @@ When you expect to have standard `Flux<type>` rules over your test cases, then u
     }
 ```
 
-If re-using verification logic is your strategy - instances with many mutations - then it can free up time delivering new permutations and endpoints.
+We lose the ability to introspect HTTP conditions, but we gain the ability to use a common reactive test
+approach to our service.
 
 # The need for Contracts
 

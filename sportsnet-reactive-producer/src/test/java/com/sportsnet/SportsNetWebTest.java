@@ -15,6 +15,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.test.StepVerifier;
 
+import java.util.function.Supplier;
+
 @WebFluxTest
 @Import(SportsNetWebConfig.class)
 @RunWith(SpringRunner.class)
@@ -75,8 +77,13 @@ public class SportsNetWebTest {
                 .getResponseBody()
         )
                 .expectSubscription()
+                .expectAccessibleContext()./**/
                 .expectNext(new Team("2", "BLUES"))
                 .verifyComplete();
 
+    }
+
+    public Supplier<StepVerifier.Step<Team>> commonSteps() {
+        return StepVerifier.create()
     }
 }
