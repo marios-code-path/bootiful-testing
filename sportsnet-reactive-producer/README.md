@@ -335,10 +335,10 @@ approach to our service.
 
 # The need for Contracts
 
-while verification of our web endpoints on the service is alone neccessary and substantially beneficial to the code base. It's no better visibile to the client as to how this service behaves. What does the client developer expect to do in place? It's usually something like deploy the trunk or tag of this service and test against it. Which means deploying additional resources like databases, and before we know it, theres several servers running to support this ephemeral test.
+While verification of our web endpoints on the service is alone neccessary and substantially beneficial to the code base. It's no better visibile to the client as to how this service behaves. What does the client developer expect to do in place? It's usually something like deploy the trunk or tag of this service and test against it. Which means deploying additional resources like databases, and before we know it, theres several servers running to support this ephemeral test.
 <!-- Insert a pic -->
 
-Consumer Driven Contract Testing means we can share contracts (of service behavior) between both sides of the communication chain. Thus this example will verify the `producer` side of this HTTP request / response exchange.
+Consumer Driven Contract Testing means we can share contracts (of service behavior) between both sides of the communication chain. This example will verify the `producer` side of this HTTP request / response exchange.
 <!-- Insert a pic -->
 
 ## Spring Cloud Contract Maven Plugin

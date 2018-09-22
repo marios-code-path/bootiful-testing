@@ -3,7 +3,6 @@ package com.sportsnet;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
@@ -20,7 +19,7 @@ public class SportsNetWebConfig {
     RouterFunction<ServerResponse> routes(TeamRepository cr) {
         return
                 route(GET("/teams/all"), r -> ServerResponse.ok().body(cr.findAll(), Team.class))
-                .and(route(GET("/teams/favorite"), r -> ServerResponse.ok().body(cr.getMyFavorites(), Team.class)));
+                        .and(route(GET("/teams/favorite"), r -> ServerResponse.ok().body(cr.getMyFavorites(), Team.class)));
     }
 
     // Require when executing stand-alone only!

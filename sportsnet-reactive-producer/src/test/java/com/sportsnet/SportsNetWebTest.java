@@ -77,13 +77,8 @@ public class SportsNetWebTest {
                 .getResponseBody()
         )
                 .expectSubscription()
-                .expectAccessibleContext()./**/
                 .expectNext(new Team("2", "BLUES"))
                 .verifyComplete();
 
-    }
-
-    public Supplier<StepVerifier.Step<Team>> commonSteps() {
-        return StepVerifier.create()
     }
 }

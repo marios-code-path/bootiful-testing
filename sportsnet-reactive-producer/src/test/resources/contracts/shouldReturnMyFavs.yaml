@@ -1,0 +1,10 @@
+description: Tests should verify favorites endpoint
+name: favorites test
+request:
+  url: /teams/favorite
+  method: GET
+response:
+  status: 200
+  headers:
+    content-type: application/json;charset=UTF-8
+  bodyFromFile: FavTeams.json
