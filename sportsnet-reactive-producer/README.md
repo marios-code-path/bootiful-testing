@@ -4,13 +4,13 @@ publishDate = 2018-09-19
 title = "Testing Reactive Cloud Apps with SpringBoot"
 description = "Use Spring-boot 2.x to verify test stages of your WebFlux and Reactive Data Apps"
 toc = true
-categories = ["reactive", "webflux", "spring", "testing", "bootifultest"]
-tags = ["reactive", "test", "java", "spring", "web", "demo","producer","cdct"]
+categories = ["reactive", "webflux", "spring", "test", "bootifultest", "cdct", "cdc", "test-frameworks"]
+tags = ["reactive", "web", "webflux", "test", "java", "spring", "demo", "producer", "cdct"]
 +++
 
 # The Producer Environment
 
-In the world of testing, we dont need much inspiration to get the job  done. However, when it comes to *what* to use, you may be left wandering whether you'll hit all of the right frameworks and tools to validate your business code. Also likely, you'll also need to figure out how to cross validate a producer app with a consumer app(s) that you may not even own!
+In the world of testing critical business funcationality, we dont need much inspiration to get the job  done. However, when it comes to *what* to use, you may be left wandering whether you'll hit all of the right frameworks and tools to validate your business code. Also likely, you'll also need to figure out how to cross validate a producer app with a consumer app(s) that you may not even own!
 
 This article will go into detail to show tools and techniques you'll likely need during your journey to satisfactory test coverage. Well written tests and coverage, means giving other developers the opportunity to make good decisions about what happens in later iterations.
 
@@ -341,6 +341,8 @@ While verification of our web endpoints on the service is alone neccessary and s
 Consumer Driven Contract Testing means we can share contracts (of service behavior) between both sides of the communication chain. This example will verify the `producer` side of this HTTP request / response exchange.
 <!-- Insert a pic -->
 
+[Spring Cloud Contract](https://cloud.spring.io/spring-cloud-contract/) allows us to engage this method of development with ease. The next couple of sections explores this.
+
 ## Spring Cloud Contract Maven Plugin
 
 To get started, we will implement the build plugin that tells our build tool (Maven) to assemble a Verification test to our contract that we will write later. This test will extend the class we create in the `baseClassForTests` config element. Ensure we turn our [TestMode](https://cloud.spring.io/spring-cloud-contract/multi/multi__spring_cloud_contract_verifier_setup.html#gradle-configuration-options) to `Explicit` so verification happens through live socket HTTP request/response.
@@ -368,7 +370,7 @@ To get started, we will implement the build plugin that tells our build tool (Ma
     </build>
 ```
 
-This base class will have to allow access to a running or mock HTTP service. The easiest way to do this is to use [RestAssured]() API to expose your routeFunctions, since it's used as a default client/server. Alternately you can set `"spring.main.web-application-type=reactive"` in properties to enable the Reactive WebFlux servers. The clients may still use restassured, unless it's been disabled through dependency exlusion in your build tool, however.
+This base class will have to allow access to a running or mock HTTP service. The easiest way to do this is to use [RestAssured](http://rest-assured.io/) API to expose your routeFunctions, since it's used as a default client/server. Alternately you can set `"spring.main.web-application-type=reactive"` in properties to enable the Reactive WebFlux servers. The clients may still use restassured, unless it's been disabled through dependency exlusion in your build tool, however.
 
 Here is our verificaion test BaseClass. It will setup a RestAssured MVC server containing our RouterFunction definition, while mocking out our repository for data queries.
 
@@ -461,12 +463,16 @@ public void validate_shouldReturnAllTeams() throws Exception {
 }
 ```
 
-Running `mvn clean install` with a passing verification will also publish an artifact to archive or local dependency repository.
-]
+Running `mvn clean install` with a passing verification will also publish an artifact to archive or local dependency repository. We can now wrap up the Producer side of our tests, and begin focusing on the [Consumer side](https://www.sudoinit5.com/post/spring-boot-testing-consumer/).
 
-# Know What?
+# Knowledge for This example
+
+* [WebTestClient Documentation](https://docs.spring.io/spring/docs/current/spring-framework-reference/pdf/testing-webtestclient.pdf)
+
+* [Spring Cloud Contract DSL](https://cloud.spring.io/spring-cloud-contract/multi/multi__contract_dsl.html)
+
+* [Fowler on CDC](https://martinfowler.com/articles/consumerDrivenContracts.html)
 
 * Maps are [Injective Functions](https://en.wikipedia.org/wiki/Injective_function) f(x) -> y for any value of x and y
 
-* [Constructable numbers](http://www.cut-the-knot.org/arithmetic/constructibleExamples.shtml) Are pretty interesting
-
+* Are pretty [Constructable numbers](http://www.cut-the-knot.org/arithmetic/constructibleExamples.shtml) interesting

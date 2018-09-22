@@ -27,7 +27,7 @@ public class SportsNetClientContractTests {
         StepVerifier
                 .create(customers)
                 .expectNext(new Team("1", "REDS"))
-                .expectNext(new Team("2", "BLUESS"))
+                .expectNext(new Team("2", "BLUES"))
                 .verifyComplete();
     }
 
