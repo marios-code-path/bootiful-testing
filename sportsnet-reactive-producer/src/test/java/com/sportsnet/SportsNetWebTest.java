@@ -70,7 +70,7 @@ public class SportsNetWebTest {
         StepVerifier.create(WebTestClient
                 .bindToRouterFunction(webConfig.routes(repository))
                 .build()
-                .get().uri("/teams/favorite")
+                .get().uri("/teams/favorites")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .exchange()
                 .returnResult(Team.class)

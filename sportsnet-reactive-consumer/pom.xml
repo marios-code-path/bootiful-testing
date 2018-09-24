@@ -27,6 +27,13 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.example.sportsnet</groupId>
+			<artifactId>reactive-producer</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<classifier>stubs</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>

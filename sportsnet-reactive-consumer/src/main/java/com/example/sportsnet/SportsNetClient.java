@@ -7,8 +7,8 @@ import reactor.core.publisher.Flux;
 
 @Component
 public class SportsNetClient {
-    @Value("${server.url:http://localhost:8080/teams/all}")
-    String url;
+    @Value("${server.url:http://localhost:8089/teams}")
+    String baseUri;
 
     private final WebClient webClient;
 
@@ -19,7 +19,15 @@ public class SportsNetClient {
     public Flux<Team> getAllTeams() {
         return this.webClient
                 .get()
-                .uri(url)
+                .uri(baseUri + "/all")
+                .retrieve()
+                .bodyToFlux(Team.class);
+    }
+
+    public Flux<Team> getFavorites() {
+        return this.webClient
+                .get()
+                .uri(baseUri + "/favorites")
                 .retrieve()
                 .bodyToFlux(Team.class);
     }

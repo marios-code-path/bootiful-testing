@@ -23,12 +23,10 @@ To start, we'll need a model or domain., The following Team data class describes
 Team.java:
 
 ```java
-@Document
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Team {
-    @Id
     private String id;
     private String name;
 }

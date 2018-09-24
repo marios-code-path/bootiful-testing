@@ -1,7 +1,7 @@
 description: Tests should verify favorites endpoint
 name: favorites test
 request:
-  url: /teams/favorite
+  url: /teams/favorites
   method: GET
 response:
   status: 200
