@@ -72,6 +72,10 @@ public class SportsNetClientWireMockTests {
     @Test
     public void testShouldFailToFetch() {
         Flux<Team> customers = this.client.getFavorites();
+        StepVerifier
+                .create(customers)
+                .expectNext(new Team("2", "BLUES"))
+                .verifyComplete();
     }
 }
 

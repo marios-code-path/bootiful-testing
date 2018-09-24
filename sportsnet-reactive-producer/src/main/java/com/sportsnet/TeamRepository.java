@@ -10,5 +10,5 @@ interface TeamRepository extends ReactiveMongoRepository<Team, String> {
     @Query("{name: {$in: ['REDS', 'BLUES']} }")
     Flux<Team> getMyFavorites();
 
-    Mono<Team> findByName();
+    Mono<Team> findByName(String name);
 }
