@@ -8,9 +8,9 @@ categories = ["reactive", "webflux", "spring", "test", "bootifultest", "cdct", "
 tags = ["reactive", "web", "webflux", "test", "java", "spring", "demo", "consumer", "cdct"]
 +++
 
-# The Producer/Consumer Duality (their exchange)
+# The Producer/Consumer exchange
 
-In the producer side, we setup a service that will let us query a database of teams. This article will focus on the consumer side of the communication chain - namely how to extract tests out of situations where the comunication chain is asymetrical. We will then dive into Spring Cloud Contract to aleviate this issue and produce a working producer/consumer contract.
+In the [producer side](https://github.com/marios-code-path/bootiful-testing/tree/master/sportsnet-reactive-producer), we setup a service that will let us query a database of teams. This article will focus on the consumer side of the communication chain - namely how to extract tests out of situations where the comunication chain is asymetrical. We will then dive into Spring Cloud Contract to aleviate this issue and produce a working producer/consumer contract.
 
 To start, we'll need a data object for client state. The following `Team` data class describes the shape of our objects.
 
@@ -275,6 +275,8 @@ Content-Type: [application/json;charset=UTF-8]
 ```
 
 # Knowledge for This example
+
+* [SourceCode to this example](https://github.com/marios-code-path/bootiful-testing/tree/master/sportsnet-reactive-consumer)
 
 * [WebTestClient Documentation](https://docs.spring.io/spring/docs/current/spring-framework-reference/pdf/testing-webtestclient.pdf)
 
