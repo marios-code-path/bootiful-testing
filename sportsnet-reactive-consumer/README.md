@@ -199,10 +199,80 @@ The majority of the logging we comment out, and focus on WireMock here. Since it
 Because we expect this to run successfully, we'll see just the Success output for this test. On the other hand, we can expect a terse output when our contracts dont go right. lets call the test for "/teams/favorites" which for some reason expects to send a slightly different output.
 
 ```sh
-
+TBD
 ```
 
-Running `mvn clean install` with a passing verification will also publish an artifact to archive or local dependency repository. We can now wrap up the Producer side of our tests, and begin focusing on the [Consumer side](https://www.sudoinit5.com/post/spring-boot-testing-consumer/).
+# Contracts in Motion
+
+Lets reuse our contract that the service side put together [in the producer sample](https://www.sudoinit5.com/post/spring-boot-testing-producer/). This piece of functionality from the Spring Cloud Contract project, lets us bind to contracts defined and deployed to our (local or remote) repositories. The meat of our configuration operation happens within the `@AutoConfigureStubRunner` annotation. Otherwise, we're looking at a basic test configuration.
+
+Lets dive into the code, and discuss whats happening here.
+
+SportsNetClientContractTests.java:
+
+```java
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@RunWith(SpringRunner.class)
+@Import({SportsNetClientApp.class, SportsNetClient.class})
+@AutoConfigureStubRunner(ids = "com.example.sportsnet:reactive-producer:+:8080",
+        stubsMode = StubRunnerProperties.StubsMode.LOCAL)
+public class SportsNetClientContractTests {
+    @Autowired
+    SportsNetClient client;
+
+    @Test
+    public void testShouldFetchTeams() {
+        Flux<Team> customers = this.client.getAllTeams();
+        StepVerifier
+                .create(customers)
+                .expectNext(new Team("1", "REDS"))
+                .expectNext(new Team("2", "BLUES"))
+                .verifyComplete();
+    }
+
+}
+```
+
+After our typical test bootstrapping, we hit our `@AutoConfigureStubRunner` annotation, and identify some key arugments that we will send to it. First, fill out the `ids` argument with a colon delimited string identifying the producer's groupID and artifactID, an expression for the version and the TCP port we want to listen on. What happens during run-time is our Stub Runner locates, downloads and then executes the stub  port.
+
+We set the `stubsMode` argument to `StubRunnerProperties.StubsMode.LOCAL` that tells the artifact locator where to look for the file - in this case we're sending it to our local `.m2` dirctory.
+
+Our client is able to now talk to a regular webserver backed by our contract definition. We can produce standard assertions without any need to augment our code to make the service definition visible as we did with vanilla WireMock.
+
+## Verifying output of stub test
+
+Looking at the output we can see stubrunner in action. Its very much like WireMock, but we didnt have to Stub out our own service. The contract - should it be parity to the service - sets the intended behaviour of our service as a responsability to the producer/consumer verification process.
+
+```sh
+$ mvn test
+...
+2018-09-25 15:03:27.436  INFO 76988 --- [tp1469597388-36] WireMock                                 : Request received:
+127.0.0.1 - GET /teams/all
+
+User-Agent: [ReactorNetty/0.7.8.RELEASE]
+Host: [localhost:8089]
+Accept-Encoding: [gzip]
+Accept: [*/*]
+
+
+
+Matched response definition:
+{
+  "status" : 200,
+  "body" : "[{\"id\":1,\"name\":\"REDS\"},{\"id\":2,\"name\":\"BLUES\"}]",
+  "headers" : {
+    "Content-Type" : "application/json;charset=UTF-8"
+  },
+  "transformers" : [ "response-template" ]
+}
+
+Response:
+HTTP/1.1 200
+Content-Type: [application/json;charset=UTF-8]
+
+
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.613 s - in com.example.sportsnet.SportsNetClientContractTests
+```
 
 # Knowledge for This example
 
