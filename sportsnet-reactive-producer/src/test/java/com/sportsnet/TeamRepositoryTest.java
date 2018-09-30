@@ -11,6 +11,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.test.StepVerifier;
 
+import java.time.Duration;
+import java.util.function.Supplier;
+
 @DataMongoTest
 @RunWith(SpringRunner.class)
 public class TeamRepositoryTest {
@@ -20,7 +23,6 @@ public class TeamRepositoryTest {
 
     private final Team one = new Team("1", "BLUES");
     private final Team two = new Team("2", "REDS");
-    private final Team falsity = new Team("3", "REDS");
 
     @Before
     public void enableFluxDebug() {
@@ -28,7 +30,26 @@ public class TeamRepositoryTest {
     }
 
     @Test
-    public void testShouldFetchAllTeams() {
+    public void testFindAllWithVirtualTime() {
+        Supplier<Publisher<Team>> setup = () ->
+                this.repo
+                        .deleteAll()
+                        .checkpoint("findAllWithVirtualTime")
+                        .thenMany(this.repo.saveAll(Flux.just(this.one, this.two)))
+                        .thenMany(repo.findAll())
+                        .delayElements(Duration.ofSeconds(5));
+
+        StepVerifier.withVirtualTime(setup)
+                .thenAwait(Duration.ofSeconds(5))
+                .expectNextMatches(r -> r.getName().equalsIgnoreCase("BLUES"))
+                .expectNoEvent(Duration.ofSeconds(5))
+                .expectNextMatches(r -> r.getName().equalsIgnoreCase("REDS"))
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    public void testShouldFetchByName() {
 
         Publisher<Team> setup =
                 this.repo
@@ -36,7 +57,7 @@ public class TeamRepositoryTest {
                         .checkpoint("saveAllTeams")
                         .thenMany(this.repo.saveAll(Flux.just(this.one, this.two)));
 
-        Publisher<Team> find = this.repo.findAll();
+        Publisher<Team> find = this.repo.findByName("BLUES");
 
         Publisher<Team> composite = Flux
                 .from(setup)
@@ -44,7 +65,7 @@ public class TeamRepositoryTest {
 
         StepVerifier
                 .create(composite)
-                .expectNext(this.one, this.two)
+                .expectNext(this.one)
                 .verifyComplete();
     }
 

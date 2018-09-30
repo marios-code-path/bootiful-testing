@@ -19,7 +19,9 @@ public class SportsNetWebConfig {
     RouterFunction<ServerResponse> routes(TeamRepository cr) {
         return
                 route(GET("/teams/all"), r -> ServerResponse.ok().body(cr.findAll(), Team.class))
-                        .and(route(GET("/teams/favorites"), r -> ServerResponse.ok().body(cr.getMyFavorites(), Team.class)));
+                        .and(route(GET("/teams/favorites"), r -> ServerResponse.ok().body(cr.getMyFavorites(), Team.class)))
+                        .and(route(GET("/teams/byName"), r -> ServerResponse.ok().body(cr.findByName(r.queryParam("name").orElse("NONE")), Team.class)));
+
     }
 
     // Require when executing stand-alone only!
