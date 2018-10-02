@@ -308,7 +308,7 @@ By exposing the underpinnnings of our service application, we get to talk to our
                 .expectBody()
                 .json(jsonBlob);
     }
-    
+
     @Test
     public void testShouldGetAll() {
 
@@ -395,7 +395,7 @@ To get started, we will implement the build plugin that tells our build tool (Ma
     </build>
 ```
 
-This base class will have to allow access to a running or mock HTTP service. The easiest way to do this is to use [RestAssured](http://rest-assured.io/) API to expose your routeFunctions, since it's used as a default client/server. Alternately you can set `"spring.main.web-application-type=reactive"` in properties to enable the Reactive WebFlux servers. The clients may still use restassured, unless it's been disabled through dependency exlusion in your build tool, however.
+This base class will have to allow access to a running or mock HTTP service. The easiest way to do this is to use [RestAssured](http://rest-assured.io/)'s API to expose your routeFunctions, since it's used as an implementation tool for client/server access. The test clients generated for producers will all use RestAssured, however you can disable `io.restassured` in the `stub-runner` dependency without change.
 
 Here is our verificaion test BaseClass. It will setup a RestAssured MVC server containing our RouterFunction definition, while mocking out our repository for data queries.
 

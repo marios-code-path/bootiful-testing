@@ -93,7 +93,7 @@ public class SportsNetWebTest {
                 .expectBody()
                 .json(jsonBlob);
     }
-    
+
     @Test
     public void testShouldGetFavs() {
 
