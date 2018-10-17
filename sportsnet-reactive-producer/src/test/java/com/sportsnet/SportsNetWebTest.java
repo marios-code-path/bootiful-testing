@@ -5,37 +5,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.util.Arrays;
-import java.util.function.Supplier;
-
-@WebFluxTest
-@Import(SportsNetWebConfig.class)
-@RunWith(SpringRunner.class)
-@AutoConfigureJsonTesters
+@RunWith(MockitoJUnitRunner.class)
 public class SportsNetWebTest {
 
+    private ObjectMapper    objectMapper = new ObjectMapper();
 
-    @Autowired
-    private ObjectMapper    objectMapper;
+    private SportsNetWebConfig webConfig = new SportsNetWebConfig();
 
-    @Autowired
-    private SportsNetWebConfig webConfig;
-
-    @MockBean
+    @Mock
     private TeamRepository repository;
 
     Team red = new Team("1", "REDZS");
