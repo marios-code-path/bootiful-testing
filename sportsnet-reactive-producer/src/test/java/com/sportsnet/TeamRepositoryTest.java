@@ -31,19 +31,19 @@ public class TeamRepositoryTest {
 
     @Test
     public void testFindAllWithVirtualTime() {
-        Supplier<Publisher<Team>> setup = () ->
+        Supplier<Flux<Team>> setupSupplier = () ->
                 this.repo
                         .deleteAll()
-                        .checkpoint("findAllWithVirtualTime")
+                        .checkpoint("MYCHECKPOINT")
                         .thenMany(this.repo.saveAll(Flux.just(this.one, this.two)))
                         .thenMany(repo.findAll())
                         .delayElements(Duration.ofSeconds(5));
 
-        StepVerifier.withVirtualTime(setup)
-                .thenAwait(Duration.ofSeconds(5))
-                .expectNextMatches(r -> r.getName().equalsIgnoreCase("BLUES"))
-                .expectNoEvent(Duration.ofSeconds(5))
-                .expectNextMatches(r -> r.getName().equalsIgnoreCase("REDS"))
+        StepVerifier.withVirtualTime(setupSupplier)
+                .thenAwait(Duration.ofSeconds(5))           // t = 5
+                .expectNextMatches(team -> team.getName().equalsIgnoreCase("BLUES"))
+                .thenAwait(Duration.ofSeconds(5))           // t = 10
+                .expectNextMatches(team -> team.getName().equalsIgnoreCase("REDS"))
                 .expectComplete()
                 .verify();
     }

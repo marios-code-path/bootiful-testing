@@ -28,7 +28,7 @@ public class BaseClass {
     private TeamRepository repository;
 
     @Before
-    public void before() throws Exception {
+    public void before() {
 
         RestAssured.baseURI = "http://localhost:" + this.port;
 

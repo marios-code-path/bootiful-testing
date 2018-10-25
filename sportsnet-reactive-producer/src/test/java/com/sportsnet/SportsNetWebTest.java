@@ -1,49 +1,35 @@
 package com.sportsnet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.util.Arrays;
-import java.util.function.Supplier;
-
 @WebFluxTest
-@Import(SportsNetWebConfig.class)
-@RunWith(SpringRunner.class)
-@AutoConfigureJsonTesters
+@RunWith(MockitoJUnitRunner.class)
 public class SportsNetWebTest {
 
+    private SportsNetWebConfig webConfig = new SportsNetWebConfig();
 
-    @Autowired
-    private ObjectMapper    objectMapper;
-
-    @Autowired
-    private SportsNetWebConfig webConfig;
-
-    @MockBean
+    @Mock
     private TeamRepository repository;
 
-    Team red = new Team("1", "REDZS");
-    Team blue = new Team("2", "BLUES");
+    private Team red = new Team("1", "REDZS");
+    private Team blue = new Team("2", "BLUES");
 
     @Before
     public void before() {
-
         Mockito
                 .when(this.repository.findAll())
                 .thenReturn(Flux.just(red, blue));
@@ -80,7 +66,7 @@ public class SportsNetWebTest {
     @Test
     public void testShouldBetByName() throws JsonProcessingException {
 
-        String jsonBlob = objectMapper.writeValueAsString(blue);
+        String jsonBlob = "{name:'BLUES', id: '2'}";
 
         WebTestClient
                 .bindToRouterFunction(webConfig.routes(repository))
@@ -91,23 +77,26 @@ public class SportsNetWebTest {
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
                 .expectBody()
-                .json(jsonBlob);
+                .json(jsonBlob); // is this semantic? YES
     }
 
     @Test
     public void testShouldGetFavs() {
 
-        StepVerifier.create(WebTestClient
+        Flux<Team> webResponseTeams = WebTestClient
                 .bindToRouterFunction(webConfig.routes(repository))
                 .build()
                 .get().uri("/teams/favorites")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .exchange()
                 .returnResult(Team.class)
-                .getResponseBody()
-        )
+                .getResponseBody();
+
+        StepVerifier
+                .create(webResponseTeams)
                 .expectSubscription()
                 .expectNext(new Team("2", "BLUES"))
+                .expectNextCount(0)     // because why not?
                 .verifyComplete();
 
     }
