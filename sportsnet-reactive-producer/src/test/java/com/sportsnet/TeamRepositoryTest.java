@@ -21,31 +21,12 @@ public class TeamRepositoryTest {
     @Autowired
     private TeamRepository repo;
 
-    private final Team one = new Team("1", "BLUES");
-    private final Team two = new Team("2", "REDS");
+    private final Team one = new Team("1883", "Dodgers");
+    private final Team two = new Team("1912", "RedSox");
 
     @Before
     public void enableFluxDebug() {
         Hooks.onOperatorDebug();
-    }
-
-    @Test
-    public void testFindAllWithVirtualTime() {
-        Supplier<Flux<Team>> setupSupplier = () ->
-                this.repo
-                        .deleteAll()
-                        .checkpoint("MYCHECKPOINT")
-                        .thenMany(this.repo.saveAll(Flux.just(this.one, this.two)))
-                        .thenMany(repo.findAll())
-                        .delayElements(Duration.ofSeconds(5));
-
-        StepVerifier.withVirtualTime(setupSupplier)
-                .thenAwait(Duration.ofSeconds(5))           // t = 5
-                .expectNextMatches(team -> team.getName().equalsIgnoreCase("BLUES"))
-                .thenAwait(Duration.ofSeconds(5))           // t = 10
-                .expectNextMatches(team -> team.getName().equalsIgnoreCase("REDS"))
-                .expectComplete()
-                .verify();
     }
 
     @Test
@@ -57,7 +38,7 @@ public class TeamRepositoryTest {
                         .checkpoint("saveAllTeams")
                         .thenMany(this.repo.saveAll(Flux.just(this.one, this.two)));
 
-        Publisher<Team> find = this.repo.findByName("BLUES");
+        Publisher<Team> find = this.repo.findByName("Dodgers");
 
         Publisher<Team> composite = Flux
                 .from(setup)
@@ -86,5 +67,24 @@ public class TeamRepositoryTest {
                 .create(composite)
                 .expectNext(this.one, this.two)
                 .verifyComplete();
+    }
+
+    @Test
+    public void testFindAllWithVirtualTime() {
+        Supplier<Flux<Team>> setupSupplier = () ->
+                this.repo
+                        .deleteAll()
+                        .checkpoint("MYCHECKPOINT")
+                        .thenMany(this.repo.saveAll(Flux.just(this.one, this.two)))
+                        .thenMany(repo.findAll())
+                        .delayElements(Duration.ofSeconds(5));
+
+        StepVerifier.withVirtualTime(setupSupplier)
+                .thenAwait(Duration.ofSeconds(5))           // t = 5
+                .expectNextMatches(team -> team.getName().equalsIgnoreCase("dodgers"))
+                .thenAwait(Duration.ofSeconds(5))           // t = 10
+                .expectNextMatches(team -> team.getName().equalsIgnoreCase("redsox"))
+                .expectComplete()
+                .verify();
     }
 }

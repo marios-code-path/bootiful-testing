@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono;
 
 interface TeamRepository extends ReactiveMongoRepository<Team, String> {
 
-    @Query("{name: {$in: ['REDS', 'BLUES']} }")
+    @Query("{name: {$in: ['Dodgers', 'RedSox']} }")
     Flux<Team> getMyFavorites();
 
     Mono<Team> findByName(String name);

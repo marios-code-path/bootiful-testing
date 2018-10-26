@@ -11,8 +11,8 @@ Contract.make {
         body(
         """
             [ 
-            { "id": 1, "name" : "REDS" },
-            { "id": 2, "name" : "BLUES" }
+            { "id": "1883", "name" : "Dodgers" },
+            { "id": "1912", "name" : "RedSox" }
             ] 
         """
         )

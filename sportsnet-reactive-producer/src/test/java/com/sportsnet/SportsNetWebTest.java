@@ -25,8 +25,8 @@ public class SportsNetWebTest {
     @Mock
     private TeamRepository repository;
 
-    private Team red = new Team("1", "REDZS");
-    private Team blue = new Team("2", "BLUES");
+    private Team red = new Team("1883", "Dodgers");
+    private Team blue = new Team("1912", "RedSox");
 
     @Before
     public void before() {
@@ -57,21 +57,21 @@ public class SportsNetWebTest {
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
                 .expectBody()
-                .jsonPath("$.[0].id").isEqualTo("1")
-                .jsonPath("$.[0].name").isEqualTo("REDZS")
-                .jsonPath("$.[1].id").isEqualTo("2")
-                .jsonPath("$.[1].name").isEqualTo("BLUES");
+                .jsonPath("$.[0].id").isEqualTo("1883")
+                .jsonPath("$.[0].name").isEqualTo("Dodgers")
+                .jsonPath("$.[1].id").isEqualTo("1912")
+                .jsonPath("$.[1].name").isEqualTo("RedSox");
     }
 
     @Test
     public void testShouldBetByName() throws JsonProcessingException {
 
-        String jsonBlob = "{name:'BLUES', id: '2'}";
+        String jsonBlob = "{name:'RedSox', id: '1912'}";
 
         WebTestClient
                 .bindToRouterFunction(webConfig.routes(repository))
                 .build()
-                .get().uri("/teams/byName?name=BLUES")
+                .get().uri("/teams/byName?name=RedSox")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .exchange()
                 .expectStatus().isOk()
@@ -95,7 +95,7 @@ public class SportsNetWebTest {
         StepVerifier
                 .create(webResponseTeams)
                 .expectSubscription()
-                .expectNext(new Team("2", "BLUES"))
+                .expectNext(new Team("1912", "RedSox"))
                 .expectNextCount(0)     // because why not?
                 .verifyComplete();
 

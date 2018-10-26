@@ -1,78 +1,64 @@
 package com.sportsnet;
 
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
+import java.io.ByteArrayInputStream;
 import java.time.Duration;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-
+@Slf4j
 public class TeamTest {
+
+    private final Team red = new Team("1912", "RedSox");
+    private final Team blue = new Team("1883", "Dodgers");
+
 
     @Test
     public void testShouldCreate() {
 
-        Team myTeam = new Team("1903", "Beşiktaş");
+        Assert.assertNotNull(red.getName());
+        Assert.assertNotSame(new Team("1912", "RedSox"), red);
 
-        Assert.assertNotNull(myTeam);
-        Assert.assertEquals("1903", myTeam.getId());
-
-        Assert.assertThat(myTeam, Matchers.notNullValue());
-
-        Matcher compoundMatcher = Matchers.allOf(
+        Assert.assertThat(red.getId(), Matchers.allOf(
                 Matchers.notNullValue(),
-                Matchers.equalTo("1903")
-        );
+                Matchers.equalTo("1912")
+        ));
 
-        Assert.assertThat(myTeam.getId(), compoundMatcher);
-
-        Assertions.assertThat(myTeam)
-                .as("All properties were fulfilled")
-                .hasNoNullFieldsOrProperties();
-
-        Assertions.assertThat(myTeam.getId())
-                .isEqualToIgnoringWhitespace("1903");
-
-        Assertions.assertThat(myTeam.getName())
-                .isEqualToIgnoringWhitespace("Beşiktaş");
+        Assertions.assertThat(red.getName())
+                .as("Name exists")
+                .isNotNull()
+                .isNotBlank()
+                .isEqualToIgnoringCase("redsox");
     }
 
     @Test
-    public void testShouldStepVerifyTeams() throws Exception {
-        Team myTeam = new Team("1903", "Beşiktaş");
+    public void testFluxShouldOperate() {   // Dear - give me functional assertions
+        Flux<Team> teamFlux = Flux.just(red)
+                .map(t -> blue);
 
-        Flux<Team> publisher = Flux.just(myTeam.getId(), myTeam.getName())
-                .map(s -> new Team("", s));
-
-        StepVerifier.create(publisher)
-                .expectNext(new Team("", "1903"))
-                .expectNext(new Team("", "Beşiktaş"))
+        StepVerifier
+                .create(teamFlux)
+                .consumeNextWith(t -> Assertions.assertThat(t)
+                    .as("blue team instead")
+                    .isEqualTo(blue)
+                )
                 .expectComplete()
-                .log()
                 .verify();
-
     }
 
-    @Test
-    public void testShouldStepVerifyWithVirtualTime() {
-        Supplier<Flux<Long>> fluxSupplier = () ->
-                Flux.interval(Duration.ofMillis(10000))
-                        .map(n -> n+1)
-                        .take(1);
-
-        StepVerifier.withVirtualTime(fluxSupplier)
-                .expectSubscription() // t =0
-                .expectNextCount(0)   // t = 0
-                .thenAwait(Duration.ofHours(2)) // t = 2 hours later...
-                .expectNext(1L)  // t = 2 hours later... , data exists
-                .verifyComplete();
-    }
 }
