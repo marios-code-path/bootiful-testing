@@ -494,6 +494,8 @@ Running `mvn clean install` with a passing verification will also publish an art
 
 * [Source Code to this Demo](https://github.com/marios-code-path/bootiful-testing/tree/master/sportsnet-reactive-producer)
 
+* [Ham Vocke's Test Pyramid on Fowler.com](https://martinfowler.com/articles/practical-test-pyramid.htm)
+
 * [WebTestClient Documentation](https://docs.spring.io/spring/docs/current/spring-framework-reference/pdf/testing-webtestclient.pdf)
 
 * [Spring Cloud Contract DSL](https://cloud.spring.io/spring-cloud-contract/multi/multi__contract_dsl.html)
@@ -502,4 +504,4 @@ Running `mvn clean install` with a passing verification will also publish an art
 
 * Maps are [Injective Functions](https://en.wikipedia.org/wiki/Injective_function) f(x) -> y for any value of x and y
 
-* Are pretty [Constructable numbers](http://www.cut-the-knot.org/arithmetic/constructibleExamples.shtml) interesting
+* GIST FOR [bwaldvogel.mongo.reactive](https://gist.github.com/Mario5Gray/f541f06e71d22cbad45c0aab04ceaca5) to configure an embedded mongo instance thats truely in-memory.

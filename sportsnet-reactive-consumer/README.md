@@ -278,6 +278,8 @@ Content-Type: [application/json;charset=UTF-8]
 
 * [SourceCode to this example](https://github.com/marios-code-path/bootiful-testing/tree/master/sportsnet-reactive-consumer)
 
+* [Ham Vocke's Test Pyramid on Fowler.com](https://martinfowler.com/articles/practical-test-pyramid.htm)
+
 * [WebTestClient Documentation](https://docs.spring.io/spring/docs/current/spring-framework-reference/pdf/testing-webtestclient.pdf)
 
 * [Spring Cloud Contract DSL](https://cloud.spring.io/spring-cloud-contract/multi/multi__contract_dsl.html)

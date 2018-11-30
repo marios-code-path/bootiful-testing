@@ -1,5 +1,6 @@
 package com.sportsnet;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
@@ -21,8 +23,8 @@ public class TeamRepositoryTest {
     @Autowired
     private TeamRepository repo;
 
-    private final Team one = new Team("1883", "Dodgers");
-    private final Team two = new Team("1912", "RedSox");
+    private final Team dodgers = new Team("1883", "Dodgers");
+    private final Team redsox = new Team("1912", "RedSox");
 
     @Before
     public void enableFluxDebug() {
@@ -36,7 +38,7 @@ public class TeamRepositoryTest {
                 this.repo
                         .deleteAll()
                         .checkpoint("saveAllTeams")
-                        .thenMany(this.repo.saveAll(Flux.just(this.one, this.two)));
+                        .thenMany(this.repo.saveAll(Flux.just(this.dodgers, this.redsox)));
 
         Publisher<Team> find = this.repo.findByName("Dodgers");
 
@@ -46,7 +48,7 @@ public class TeamRepositoryTest {
 
         StepVerifier
                 .create(composite)
-                .expectNext(this.one)
+                .expectNext(this.dodgers)
                 .verifyComplete();
     }
 
@@ -55,7 +57,7 @@ public class TeamRepositoryTest {
         Publisher<Team> setup =
                 this.repo
                         .deleteAll()
-                        .thenMany(this.repo.saveAll(Flux.just(this.one, this.two)));
+                        .thenMany(this.repo.saveAll(Flux.just(this.dodgers, this.redsox)));
 
         Publisher<Team> find = this.repo.getMyFavorites();
 
@@ -65,7 +67,7 @@ public class TeamRepositoryTest {
 
         StepVerifier
                 .create(composite)
-                .expectNext(this.one, this.two)
+                .expectNext(this.dodgers, this.redsox)
                 .verifyComplete();
     }
 
@@ -74,17 +76,20 @@ public class TeamRepositoryTest {
         Supplier<Flux<Team>> setupSupplier = () ->
                 this.repo
                         .deleteAll()
-                        .checkpoint("MYCHECKPOINT")
-                        .thenMany(this.repo.saveAll(Flux.just(this.one, this.two)))
+//                        .then(Mono.error(new Exception("UHOH")))
+//                        .checkpoint("MYCHECKPOINT")
+                        .thenMany(this.repo.saveAll(Flux.just(this.dodgers, this.redsox)))
                         .thenMany(repo.findAll())
                         .delayElements(Duration.ofSeconds(5));
 
-        StepVerifier.withVirtualTime(setupSupplier)
-                .thenAwait(Duration.ofSeconds(5))           // t = 5
+        StepVerifier
+                .withVirtualTime(setupSupplier)
+                .expectSubscription()
+                .expectNoEvent(Duration.ofSeconds(5))
                 .expectNextMatches(team -> team.getName().equalsIgnoreCase("dodgers"))
                 .thenAwait(Duration.ofSeconds(5))           // t = 10
                 .expectNextMatches(team -> team.getName().equalsIgnoreCase("redsox"))
                 .expectComplete()
-                .verify();
+                .verify(Duration.ofSeconds(5));
     }
 }

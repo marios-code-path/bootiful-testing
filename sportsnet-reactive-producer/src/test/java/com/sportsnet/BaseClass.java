@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Flux;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(properties = {"server.port=0"}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BaseClass {
 
     @LocalServerPort
@@ -38,7 +38,7 @@ public class BaseClass {
 
         Mockito
                 .when(this.repository.getMyFavorites())
-                .thenReturn(Flux.just(new Team("1883", "Dodgers")));
+                .thenReturn(Flux.just(new Team("1912", "RedSox")));
 
     }
 }

@@ -7,7 +7,7 @@ import reactor.core.publisher.Flux;
 
 @Component
 public class SportsNetClient {
-    @Value("${server.url:http://localhost:8089/teams}")
+    @Value("${server.url:http://localhost:8089}")
     String baseUri;
 
     private final WebClient webClient;

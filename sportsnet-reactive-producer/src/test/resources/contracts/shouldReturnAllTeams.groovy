@@ -12,13 +12,13 @@ Contract.make {
         """
             [ 
             { "id": "1883", "name" : "Dodgers" },
-            { "id": "1912", "name" : "RedSox" }
+            { "id": "1912", "name" : "OldSox" }
             ] 
         """
         )
         status(200)
         headers {
-            contentType(applicationJsonUtf8())
+                    contentType(applicationJsonUtf8())
         }
     }
 }

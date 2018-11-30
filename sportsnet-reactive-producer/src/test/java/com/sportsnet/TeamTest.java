@@ -6,6 +6,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
@@ -16,7 +17,9 @@ import java.io.ByteArrayInputStream;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -26,7 +29,6 @@ public class TeamTest {
 
     private final Team red = new Team("1912", "RedSox");
     private final Team blue = new Team("1883", "Dodgers");
-
 
     @Test
     public void testShouldCreate() {
@@ -46,19 +48,22 @@ public class TeamTest {
                 .isEqualToIgnoringCase("redsox");
     }
 
-    @Test
-    public void testFluxShouldOperate() {   // Dear - give me functional assertions
-        Flux<Team> teamFlux = Flux.just(red)
-                .map(t -> blue);
+    private final List<String> teamNames = Arrays.asList(
+            "RedSox",
+            "Dodgers",
+            "Padres",
+            "Angels"
+    );
 
-        StepVerifier
-                .create(teamFlux)
-                .consumeNextWith(t -> Assertions.assertThat(t)
-                    .as("blue team instead")
-                    .isEqualTo(blue)
-                )
-                .expectComplete()
-                .verify();
+    @Test
+    public void testFluxShouldExecWith() {
+        Flux<Team> teamFlux = Flux.just(red, blue);
+
+        StepVerifier.
+                create(teamFlux)
+                .expectNext(red)
+                .expectNext(blue)
+                .verifyComplete();
     }
 
 }

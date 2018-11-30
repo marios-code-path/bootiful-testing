@@ -4,12 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
@@ -17,12 +18,16 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 @WebFluxTest
-@RunWith(MockitoJUnitRunner.class)
+@Import(SportsNetWebConfig.class)
+@RunWith(SpringRunner.class)
 public class SportsNetWebTest {
 
     private SportsNetWebConfig webConfig = new SportsNetWebConfig();
 
-    @Mock
+    @Autowired
+    private WebTestClient webTestClient;
+
+    @MockBean
     private TeamRepository repository;
 
     private Team red = new Team("1883", "Dodgers");
@@ -48,9 +53,7 @@ public class SportsNetWebTest {
     @Test
     public void testShouldGetAll() {
 
-        WebTestClient
-                .bindToRouterFunction(webConfig.routes(repository))
-                .build()
+        this.webTestClient
                 .get().uri("/teams/all")
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .exchange()
@@ -64,9 +67,9 @@ public class SportsNetWebTest {
     }
 
     @Test
-    public void testShouldBetByName() throws JsonProcessingException {
+    public void testShouldFetchByName() throws JsonProcessingException {
 
-        String jsonBlob = "{name:'RedSox', id: '1912'}";
+        String jsonBlob = "{id: '1912', name:'RedSox'}";
 
         WebTestClient
                 .bindToRouterFunction(webConfig.routes(repository))
@@ -94,7 +97,6 @@ public class SportsNetWebTest {
 
         StepVerifier
                 .create(webResponseTeams)
-                .expectSubscription()
                 .expectNext(new Team("1912", "RedSox"))
                 .expectNextCount(0)     // because why not?
                 .verifyComplete();
