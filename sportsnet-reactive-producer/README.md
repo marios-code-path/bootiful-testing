@@ -8,6 +8,11 @@ categories = ["reactive", "webflux", "spring", "test", "bootifultest", "cdct", "
 tags = ["reactive", "web", "webflux", "test", "java", "spring", "demo", "producer", "cdct"]
 +++
 
+# Run the service
+```
+./mvnw spring-boot:run
+```
+
 # The Producer Environment
 
 In the world of testing critical business funcationality, we dont need much inspiration to get the job  done. However, when it comes to *what* to use, you may be left wandering whether you'll hit all of the right frameworks and tools to validate your business code. Also likely, you'll also need to figure out how to cross validate a producer app with a consumer app(s) that you may not even own!
