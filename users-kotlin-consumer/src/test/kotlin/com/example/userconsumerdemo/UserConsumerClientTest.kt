@@ -1,29 +1,27 @@
 package com.example.userconsumerdemo
 
+import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner
 import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties
-import org.springframework.context.annotation.Import
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.web.reactive.function.client.WebClient
 import reactor.test.StepVerifier
 
 
-//@ExtendWith(SpringExtension::class)  // DOESNGT WORK FOR ME
-@RunWith(SpringRunner::class)
+@ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @AutoConfigureStubRunner(ids = ["com.example:users-kotlin-producer:+:8090"],
         stubsMode = StubRunnerProperties.StubsMode.LOCAL)
-@Import(UserClient::class, UserConsumerApp::class)
-class UserConsumerClientTest {
-    @Autowired
-    private lateinit var userClient: UserClient
+class UserConsumerClientTest(@Autowired private val webClient: WebClient) {
+
+    private val userClient by lazy {
+        UserClient(webClient)
+    }
 
     private val generalUserMatcher = Matchers.allOf(
             Matchers.notNullValue(),
@@ -37,8 +35,8 @@ class UserConsumerClientTest {
         StepVerifier
                 .create(userClient.getAll())
                 .expectSubscription()
-                .assertNext { Assert.assertThat(it, generalUserMatcher) }
-                .assertNext { Assert.assertThat(it, generalUserMatcher) }
+                .assertNext { MatcherAssert.assertThat(it, generalUserMatcher) }
+                .assertNext { MatcherAssert.assertThat(it, generalUserMatcher) }
                 .verifyComplete()
     }
 
