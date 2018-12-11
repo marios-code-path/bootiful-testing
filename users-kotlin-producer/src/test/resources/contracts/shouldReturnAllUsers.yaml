@@ -1,0 +1,10 @@
+description: Tests should verify /all endpoint
+name: all endpoint test
+request:
+  url: /all
+  method: GET
+response:
+  status: 200
+  headers:
+    content-type: application/json;charset=UTF-8
+  bodyFromFile: AllUsers.json

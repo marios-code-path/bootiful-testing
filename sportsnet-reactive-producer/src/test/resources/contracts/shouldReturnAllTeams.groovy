@@ -12,7 +12,7 @@ Contract.make {
         """
             [ 
             { "id": "1883", "name" : "Dodgers" },
-            { "id": "1912", "name" : "OldSox" }
+            { "id": "1912", "name" : "RedSox" }
             ] 
         """
         )
