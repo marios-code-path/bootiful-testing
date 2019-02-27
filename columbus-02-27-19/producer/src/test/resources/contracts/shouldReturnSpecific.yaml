@@ -1,0 +1,10 @@
+description: Test all
+name:  testAll
+request:
+  url: /all
+  method: GET
+response:
+  status: 200
+  headers:
+    content-type: application/json;charset=UTF-8
+  bodyFromFile: generic.json
