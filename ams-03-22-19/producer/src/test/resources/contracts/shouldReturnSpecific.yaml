@@ -1,0 +1,10 @@
+description: Return a Car
+name: Car specific test
+request:
+  url: /car?key=12345-67890-07061-97981
+  method: GET
+response:
+  status: 200
+  headers:
+    content-type: application/json;charset=UTF-8
+  bodyFromFile: generic.json

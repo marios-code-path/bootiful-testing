@@ -1,36 +1,37 @@
-package com.example.demoproducer;
+package com.example.producer;
 
 import io.restassured.RestAssured;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.junit4.SpringRunner;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
+@Import(CarRestService.class)
 public class BaseClass {
 
     @LocalServerPort
     private Long port;
 
     @MockBean
-    UserRepository repo;
+    CarService service;
 
-    private User user1 = new User("1234", "Mario");
-    private User user2 = new User("2345", "Dave");
+    private String key = "12345-67890-07061-97981";
 
-    @Test
+    @BeforeEach
     public void setUp() {
-        Mockito.when(repo.findAll())
-                .thenReturn(Flux.just(user1, user2));
+        Mockito.when(service.newCar(any()))
+                .thenReturn(Mono.just(key));
+        Mockito.when(service.getCar(Mockito.anyString()))
+                .thenReturn(Mono.just(new Car("Tesla", "Z", "Red")));
 
         RestAssured.baseURI = "http://localhost:" + port;
     }
