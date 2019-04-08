@@ -1,8 +1,8 @@
 package com.demo.producer
 
-import junit.framework.Assert.*
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.extension.ExtendWith
@@ -43,6 +43,7 @@ class UserDataTests {
     @Test
     fun `should save and retrieve user`() {
         val id = UUID.randomUUID()
+
         val userMono = Mono
                 .just(User(id, "Mario", Instant.now()))
 
@@ -62,7 +63,6 @@ class UserDataTests {
                                             Matchers.hasProperty("id", Matchers.notNullValue()),
                                             Matchers.hasProperty("id", Matchers.equalTo(id)),
                                             Matchers.hasProperty("name", Matchers.equalTo("Mario"))
-
                                     ))
                 }
                 .verifyComplete()
