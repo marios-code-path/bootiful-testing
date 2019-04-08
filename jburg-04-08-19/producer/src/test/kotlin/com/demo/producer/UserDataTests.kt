@@ -1,6 +1,8 @@
 package com.demo.producer
 
 import junit.framework.Assert.*
+import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.extension.ExtendWith
@@ -50,6 +52,20 @@ class UserDataTests {
                         repo.findById(id)
                 )
 
+        StepVerifier
+                .create(opsPublisher)
+                .expectSubscription()
+                .assertNext {
+                    MatcherAssert
+                            .assertThat("User was found", it,
+                                    Matchers.allOf(
+                                            Matchers.hasProperty("id", Matchers.notNullValue()),
+                                            Matchers.hasProperty("id", Matchers.equalTo(id)),
+                                            Matchers.hasProperty("name", Matchers.equalTo("Mario"))
+
+                                    ))
+                }
+                .verifyComplete()
     }
 
 }
