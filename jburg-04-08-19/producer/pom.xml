@@ -124,7 +124,7 @@
 				<configuration>
 					<baseClassForTests>com.demo.producer.BaseClass</baseClassForTests>
 					<testFramework>JUNIT5</testFramework>
-					<testMode>WEBTESTCLIENT</testMode>
+					<testMode>EXPLICIT</testMode>
 				</configuration>
 				<extensions>true</extensions>
 			</plugin>

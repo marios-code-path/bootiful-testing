@@ -37,9 +37,6 @@ class ConsumerClientTest(@Autowired private val webClient: WebClient) {
                 .assertNext {
                     MatcherAssert.assertThat("user state", it, generalUserMatcher)
                 }
-                .assertNext {
-                    MatcherAssert.assertThat("user state", it, generalUserMatcher)
-                }
                 .verifyComplete()
     }
 

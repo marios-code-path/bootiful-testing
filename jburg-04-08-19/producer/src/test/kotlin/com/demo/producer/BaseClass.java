@@ -30,8 +30,6 @@ public class BaseClass {
 
     @BeforeEach
     public void setUp() {
-        System.out.println("TEST: " + testInstant);
-
         Mockito.when(repo.findAll())
                 .thenReturn(Flux.just(
                         new User(uuid, "Marvin", testInstant)

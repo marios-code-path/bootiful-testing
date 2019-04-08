@@ -14,7 +14,7 @@ class UserWebConfig(val repo: UserRepository) {
     @Bean
     fun userRoutes(): RouterFunction<ServerResponse> = router {
             accept(MediaType.APPLICATION_JSON_UTF8).nest {
-                (GET("/users") or GET("/all")) {
+                (GET("/users") or GET("/all")) { req ->
                     ok()
                             .body(repo.findAll(), User::class.java)
                 }

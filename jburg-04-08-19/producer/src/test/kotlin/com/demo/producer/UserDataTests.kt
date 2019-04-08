@@ -25,16 +25,17 @@ class UserDataTests {
     @Test
     fun `should publish user`() {
         val userMono = Mono
-                .just(User(UUID.randomUUID(), "Mario", Instant.now()))
+                .just(
+                        User(UUID.randomUUID(), "Mario", Instant.now())
+                )
 
         StepVerifier
                 .create(userMono)
-                .expectSubscription()
                 .assertNext {
                     assertAll("User State",
                             { assertNotNull(it) },
                             { assertEquals("Mario", it.name) },
-                            { assertTrue(Instant.now() > it.modified) })
+                            { assertTrue(Instant.now() >= it.modified) })
                 }
                 .expectComplete()
                 .verify()
@@ -47,7 +48,7 @@ class UserDataTests {
         val userMono = Mono
                 .just(User(id, "Mario", Instant.now()))
 
-        val opsPublisher = repo
+        val opsPublisher : Mono<User> = repo
                 .saveAll(userMono)
                 .then(
                         repo.findById(id)
