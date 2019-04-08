@@ -33,13 +33,6 @@ class UserRestTests {
     }
 
     @Test
-    fun `basic test`() {
-         val uuid = UUID.fromString("7e43b2fc-59db-11e9-8647-d663bd873d93")
-         val testInstant = Instant.ofEpochMilli(1554712769711L)
-        println("TEST: $testInstant")
-
-    }
-    @Test
     fun `should find all`() {
         testClient
                 .get()
