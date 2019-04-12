@@ -18,7 +18,7 @@ import java.util.*
 class UserPersistenceTests {
 
     @Autowired
-    lateinit var repo: UserRepo
+    lateinit var repoDemo: DemoUserRepo
 
     @Test
     fun `should stream user and verify`() {
@@ -40,9 +40,9 @@ class UserPersistenceTests {
 
     @Test
     fun `should persist and find`() {
-        val persistencePublisher = repo
+        val persistencePublisher = repoDemo
                 .save(DemoUser(UUID.randomUUID(), "Mario", Instant.now()))
-                .thenMany(repo.findAll())
+                .thenMany(repoDemo.findAll())
 
         StepVerifier
                 .create(persistencePublisher)
