@@ -25,7 +25,7 @@ public class BaseClass {
     @MockBean
     UserRepository repo;
 
-    private UUID uuid = UUID.fromString( "12345-67890-07061-97981");
+    private UUID uuid = UUID.fromString("12345-67890-07061-97981");
     private Instant testInstant = Instant.ofEpochMilli(1554712769711L);
 
     @BeforeEach
