@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
-@Import(DemoUserRoutes.class)
+@Import(DemoUserRestConfig.class)
 public class BaseClass {
 
     @LocalServerPort

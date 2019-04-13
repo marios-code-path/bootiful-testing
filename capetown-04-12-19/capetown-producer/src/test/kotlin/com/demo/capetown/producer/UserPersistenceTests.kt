@@ -23,7 +23,9 @@ class UserPersistenceTests {
     @Test
     fun `should stream user and verify`() {
         val userPublisher = Mono
-                .just(DemoUser(UUID.randomUUID(), "Mario", Instant.now()))
+                .just(
+                        DemoUser(UUID.randomUUID(), "Mario", Instant.now())
+                )
 
         StepVerifier
                 .create(userPublisher)

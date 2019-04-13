@@ -1,6 +1,5 @@
 package com.demo.capetown.producer
 
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -27,15 +26,14 @@ class UserRestTests {
     fun setUp() {
         Mockito.`when`(repo.findAll())
                 .thenReturn(
-                        Flux
-                                .just(DemoUser(UUID.randomUUID(), "Mario", Instant.now()))
+                        Flux.just(DemoUser(UUID.randomUUID(), "Mario", Instant.now()))
                 )
     }
 
     @Test
     fun `should HTTP GET all DemoUser`() {
         WebTestClient
-                .bindToRouterFunction(DemoUserRoutes(repo).demoRoutes())
+                .bindToRouterFunction(DemoUserRestConfig(repo).demoRoutes())
                 .build()
                 .get()
                 .uri("/all")
