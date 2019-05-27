@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.server.router
 @Configuration
 class SpaceRouters {
 
-    @Bean
+    @Bean // what is the Kotlin DSL Narrative ?
     fun routes(repo: StarRepository): RouterFunction<ServerResponse> =
             router {
                 GET("/all") {

@@ -22,5 +22,4 @@ class Client(val webClient: WebClient) {
                     .accept(MediaType.APPLICATION_JSON_UTF8)
                     .retrieve()
                     .bodyToFlux(Star::class.java)
-
 }

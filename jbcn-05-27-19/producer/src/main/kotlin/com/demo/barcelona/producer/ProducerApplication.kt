@@ -15,6 +15,7 @@ fun main(args: Array<String>) {
     runApplication<ProducerApplication>(*args)
 }
 
+// what is the configuration narrative?
 @Configuration
 @EnableReactiveCassandraRepositories(basePackages = ["com.demo.barcelona.producer"])
 class CassandraConfiguration : AbstractReactiveCassandraConfiguration() {

@@ -19,11 +19,13 @@ import java.util.*
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE, classes = [ProducerApplication::class])
 @CassandraUnit
-@TestExecutionListeners(CassandraUnitDependencyInjectionTestExecutionListener::class, DependencyInjectionTestExecutionListener::class)
+@TestExecutionListeners(
+        CassandraUnitDependencyInjectionTestExecutionListener::class,
+        DependencyInjectionTestExecutionListener::class)
 @CassandraDataSet("keyspace.cql")
 class ProducerDataTests {
 
-    @Autowired // where are the cassandra spring data docs?
+    @Autowired
     private lateinit var repo: StarRepository
 
     @Test
@@ -38,8 +40,6 @@ class ProducerDataTests {
         val publisher = Flux
                 .from(savePublisher)
                 .then(findPublisher)
-
-       println("UUID FROM STRING " + UUID.fromString("7e43b2fc-59db-11e9-8647-d663bd873d93"))
 
         StepVerifier
                 .create(publisher)
