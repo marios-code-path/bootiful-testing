@@ -1,4 +1,4 @@
-package com.example.parisproducer
+package com.demo.barcelona.producer
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -7,14 +7,15 @@ import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.router
 
 @Configuration
-class AccordionRouters {
+class SpaceRouters {
+
     @Bean
-    fun getRouter(repo: AccordionRepository): RouterFunction<ServerResponse> =
-        router {
-            GET("/all") {
-                ServerResponse
-                        .ok()
-                        .body(repo.findAll(), Accordion::class.java)
+    fun routes(repo: StarRepository): RouterFunction<ServerResponse> =
+            router {
+                GET("/all") {
+                    ServerResponse
+                            .ok()
+                            .body(repo.findAll(), Star::class.java)
+                }
             }
-    }
 }
