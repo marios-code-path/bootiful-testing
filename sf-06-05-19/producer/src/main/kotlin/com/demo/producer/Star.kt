@@ -1,4 +1,4 @@
-package com.demo.barcelona.producer
+package com.demo.producer
 
 import org.springframework.data.cassandra.core.mapping.Column
 import org.springframework.data.cassandra.core.mapping.PrimaryKey
