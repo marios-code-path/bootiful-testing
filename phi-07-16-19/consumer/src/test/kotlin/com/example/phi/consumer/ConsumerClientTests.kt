@@ -9,7 +9,7 @@ import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties
 import reactor.test.StepVerifier
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@AutoConfigureStubRunner(ids = ["com.example.phi:demo:+:8090"], stubsMode = StubRunnerProperties.StubsMode.LOCAL)
+@AutoConfigureStubRunner(ids = ["com.example.phi:producer:+:8090"], stubsMode = StubRunnerProperties.StubsMode.LOCAL)
 class ConsumerClientTests {
 
     @Autowired
