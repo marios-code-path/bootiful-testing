@@ -1,6 +1,7 @@
 package com.example.streamy
 
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
@@ -30,7 +31,7 @@ class MessageRouterTests {
     @MockBean
     private lateinit var messageService: MessageService
 
-    @BeforeAll
+    @BeforeEach
     fun setUp() {
         BDDMockito
                 .given(messageService.get(anyObject()))

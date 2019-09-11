@@ -28,6 +28,7 @@ class MessageRouters(val messageService: MessageService) {
             val serviceResult = it
                     .bodyToMono(MyRequest::class.java)
                     .flatMap { req ->
+                        println("REQ: ${req.from} , ${req.text}")
                         messageService.put("demo", req.from, req.text)
                     }
 
