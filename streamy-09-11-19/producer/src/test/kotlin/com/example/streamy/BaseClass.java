@@ -8,6 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import reactor.core.publisher.Flux;
 
+import java.util.UUID;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class BaseClass {
 
@@ -22,7 +24,7 @@ public class BaseClass {
         Mockito
                 .when(service.get(Mockito.anyString()))
                 .thenReturn(
-                        Flux.just(new Message(123456L, "Mario", "Demo Time"))
+                        Flux.just(new Message(new UUID(123456L, 0L), "Mario", "Demo Time"))
                 );
         RestAssured.baseURI = "http://localhost:" + port + "/";
     }

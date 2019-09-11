@@ -5,6 +5,10 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.server.RouterFunction
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.router
+import reactor.core.publisher.Mono
+import java.util.*
+
+data class MyRequest(val from: String, val text: String)
 
 @Configuration
 class MessageRouters(val messageService: MessageService) {
@@ -18,19 +22,18 @@ class MessageRouters(val messageService: MessageService) {
         }
     }
 
-    data class MyRequest(val from: String, val text: String)
-
     @Bean
     fun routeToAppendStream(): RouterFunction<ServerResponse> = router {
-        POST("/write") {
+        POST("/append") {
             val serviceResult = it
                     .bodyToMono(MyRequest::class.java)
-                    .map {req ->
+                    .flatMap { req ->
                         messageService.put("demo", req.from, req.text)
                     }
 
-            ServerResponse.ok()
-                    .body(serviceResult, Long::class.java)
+            ServerResponse
+                    .ok()
+                    .body(serviceResult, UUID::class.java)
         }
     }
 }

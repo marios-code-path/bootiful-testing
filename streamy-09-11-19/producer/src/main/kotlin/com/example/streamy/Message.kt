@@ -1,3 +1,5 @@
 package com.example.streamy
 
-data class Message(var id: Long?, val from: String, val text: String)
+import java.util.*
+
+data class Message(var id: UUID, val from: String, val text: String)

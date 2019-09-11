@@ -4,19 +4,17 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito
+import org.mockito.Mockito
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Hooks
 import reactor.core.publisher.Mono
-import org.mockito.Mockito
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.MultiValueMap
-import org.springframework.web.reactive.function.BodyInserters
+import java.util.*
 
 fun <T> anyObject(): T {
     Mockito.anyObject<T>()
@@ -32,16 +30,17 @@ class MessageRouterTests {
     @MockBean
     private lateinit var messageService: MessageService
 
-
     @BeforeAll
     fun setUp() {
         BDDMockito
                 .given(messageService.get(anyObject()))
-                .willReturn(Flux.just(Message(123456L, "Mario", "Demo Time")))
+                .willReturn(Flux.just(Message(UUID(123456L,0L), "Mario", "Demo Time")))
 
         BDDMockito
                 .given(messageService.put(anyObject(), anyObject(), anyObject()))
-                .willReturn(Mono.just(123456L))
+                .willReturn(Mono.just(UUID(123456L,0L)))
+
+        Hooks.onOperatorDebug()
     }
 
     @Test
@@ -50,15 +49,15 @@ class MessageRouterTests {
                 .bindToRouterFunction(MessageRouters(messageService).routeToAppendStream())
                 .build()
                 .post()
-                .uri("/write")
+                .uri("/append")
                 .accept(MediaType.APPLICATION_JSON)
-                .body(Mono.just(MessageRouters.MyRequest("Mario", "Demo Time")), MessageRouters.MyRequest::class.java)
+                .body(Mono.just(MyRequest("Mario", "Demo Time")), MyRequest::class.java)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader()
                 .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                .equals(123456L)
+                .equals(UUID(123456L, 0L))
 
 
     }

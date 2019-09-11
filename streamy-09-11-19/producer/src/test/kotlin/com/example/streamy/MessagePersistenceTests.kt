@@ -68,7 +68,11 @@ class MessagePersistenceTests {
                     Assertions
                             .assertThat(it)
                             .isNotNull()
-                            .isGreaterThan(0)
+
+                    Assertions
+                            .assertThat(it.mostSignificantBits)
+                            .isNotNull()
+                            .isGreaterThan(0L)
                 }
                 .expectComplete()
                 .verify()
@@ -83,10 +87,10 @@ class MessagePersistenceTests {
                     MatcherAssert
                             .assertThat(it,
                                     Matchers.allOf(
-                                    Matchers.notNullValue(),
-                                    Matchers.hasProperty("from"),
-                                    Matchers.hasProperty("text",
-                                            Matchers.equalTo("Demo Time")))
+                                            Matchers.notNullValue(),
+                                            Matchers.hasProperty("from"),
+                                            Matchers.hasProperty("text",
+                                                    Matchers.equalTo("Demo Time")))
                             )
                 }
                 .expectComplete()
@@ -106,9 +110,13 @@ class MessagePersistenceTests {
                 .assertNext {
                     Assertions
                             .assertThat(it)
-                            .`as`("A Long was returned.")
+                            .`as`("A UUID was returned.")
                             .isNotNull()
-                            .isGreaterThan(0)
+
+                    Assertions
+                            .assertThat(it.mostSignificantBits)
+                            .isNotNull()
+                            .isGreaterThan(0L)
                 }
                 .expectComplete()
                 .verify()
