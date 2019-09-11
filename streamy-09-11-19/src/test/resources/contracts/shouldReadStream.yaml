@@ -1,0 +1,10 @@
+description: Should return all Messages
+name: Test all message fetch
+request:
+  url: /read
+  method: GET
+response:
+  status: 200
+  headers:
+    content-type: application/json
+  bodyFromFile: generic.json
