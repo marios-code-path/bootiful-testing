@@ -3,17 +3,19 @@ package com.example.streamy
 import org.springframework.data.redis.connection.stream.MapRecord
 import org.springframework.data.redis.connection.stream.RecordId
 import org.springframework.data.redis.connection.stream.StreamOffset
+import org.springframework.data.redis.connection.stream.StreamReadOptions
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.Duration
 import java.util.*
 
 @Service
 class MessageService(val template: ReactiveStringRedisTemplate) {
     fun get(streamKey: String): Flux<Message> = template
             .opsForStream<String, String>()
-            .read(StreamOffset.fromStart(streamKey))
+            .read(StreamReadOptions.empty().block(Duration.ofSeconds(30)) , StreamOffset.fromStart(streamKey))
             .map {
                 Message(UUID(it.id.timestamp!!, it.id.sequence!!), it.value["from"]!!, it.value["text"]!!)
             }

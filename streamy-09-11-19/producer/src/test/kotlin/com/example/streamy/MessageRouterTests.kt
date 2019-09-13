@@ -1,16 +1,15 @@
 package com.example.streamy
 
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito
 import org.mockito.Mockito
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType
-import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Hooks
@@ -24,31 +23,35 @@ fun <T> anyObject(): T {
 
 fun <T> uninitialized(): T = null as T
 
-@ExtendWith(SpringExtension::class)
+@WebFluxTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MessageRouterTests {
 
     @MockBean
     private lateinit var messageService: MessageService
 
+    @Autowired
+    private lateinit var testClient: WebTestClient
+
+    @Configuration
+    class MessageRoutersTestConfig(svc: MessageService) : MessageRouters(svc)
+
     @BeforeEach
     fun setUp() {
         BDDMockito
                 .given(messageService.get(anyObject()))
-                .willReturn(Flux.just(Message(UUID(123456L,0L), "Mario", "Demo Time")))
+                .willReturn(Flux.just(Message(UUID(123456L, 0L), "Mario", "Demo Time")))
 
         BDDMockito
                 .given(messageService.put(anyObject(), anyObject(), anyObject()))
-                .willReturn(Mono.just(UUID(123456L,0L)))
+                .willReturn(Mono.just(UUID(123456L, 0L)))
 
         Hooks.onOperatorDebug()
     }
 
     @Test
     fun `should write a message`() {
-        WebTestClient
-                .bindToRouterFunction(MessageRouters(messageService).routeToAppendStream())
-                .build()
+        testClient
                 .post()
                 .uri("/append")
                 .accept(MediaType.APPLICATION_JSON)

@@ -27,6 +27,5 @@ class ClientTests {
                             .hasNoNullFieldsOrProperties()
                 }
                 .verifyComplete()
-
     }
 }
