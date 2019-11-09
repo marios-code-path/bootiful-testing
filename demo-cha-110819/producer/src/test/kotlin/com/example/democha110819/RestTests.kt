@@ -1,4 +1,4 @@
-package com.woburn.producer
+package com.example.democha110819
 
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -12,31 +12,37 @@ import reactor.core.publisher.Flux
 import java.util.*
 
 @WebFluxTest
-class WebTests {
+class RestTests {
 
     @MockBean
-    private lateinit var repo: ReactiveMongoRepository<Cereal, UUID>
+    lateinit var repo: ReactiveMongoRepository<Team, UUID>
 
     @BeforeEach
     fun setUp() {
         BDDMockito
                 .given(repo.findAll())
-                .willReturn(Flux.just(Cereal(UUID.randomUUID(), "Cinnamon Toast")))
+                .willReturn(
+                        Flux.just(
+                                Team(UUID.randomUUID(), "Panthers")
+                        )
+                )
     }
 
     @Test
-    fun `should find all`() {
+    fun `should get all`() {
         WebTestClient
-                .bindToRouterFunction(CerealBox(repo).routes())
+                .bindToRouterFunction(TeamRouters().route(repo))
                 .build()
                 .get()
                 .uri("/all")
-                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .expectStatus().isOk
-                .expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
+                .expectStatus()
+                .isOk()
+                .expectHeader()
+                .contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                .jsonPath("$.[0].name").isEqualTo("Cinnamon Toast")
                 .jsonPath("$.[0].id").isNotEmpty
+                .jsonPath("$.[0].name").isEqualTo("Panthers")
     }
 }

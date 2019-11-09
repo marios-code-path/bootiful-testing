@@ -1,4 +1,5 @@
-package com.woburn.producer;
+package com.example.democha110819;
+
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,13 +18,13 @@ public class BaseClass {
     private int port;
 
     @MockBean
-    private CerealRepository repo;
+    private TeamRepository repo;
 
     @BeforeEach
     void setUp() {
         Mockito
                 .when(repo.findAll())
-                .thenReturn(Flux.just(new Cereal(UUID.fromString("7e43b2fc-59db-11e9-8647-d663bd873d93"), "Cinnamon Toast")));
+                .thenReturn(Flux.just(new Team(UUID.fromString("7e43b2fc-59db-11e9-8647-d663bd873d93"), "Panthers")));
 
         RestAssured.baseURI = "http://localhost:" + port + "/";
     }

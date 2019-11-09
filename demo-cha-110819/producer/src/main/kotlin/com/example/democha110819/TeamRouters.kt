@@ -1,4 +1,4 @@
-package com.woburn.producer
+package com.example.democha110819
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -9,14 +9,15 @@ import org.springframework.web.reactive.function.server.router
 import java.util.*
 
 @Configuration
-class CerealBox(val repo: ReactiveMongoRepository<Cereal, UUID>) {
+class TeamRouters {
 
     @Bean
-    fun routes(): RouterFunction<ServerResponse> = router {
+    fun route(repo: ReactiveMongoRepository<Team, UUID>)
+            : RouterFunction<ServerResponse> = router {
         GET("/all") { req ->
             ServerResponse
                     .ok()
-                    .body(repo.findAll(), Cereal::class.java)
+                    .body(repo.findAll(), Team::class.java)
         }
     }
 }
