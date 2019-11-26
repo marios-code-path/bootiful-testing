@@ -1,0 +1,10 @@
+description: Should return all Order
+name: Test all fetch for orders
+request:
+  url: /all
+  method: GET
+response:
+  status: 200
+  headers:
+    content-type: application/json
+  bodyFromFile: generic.json
