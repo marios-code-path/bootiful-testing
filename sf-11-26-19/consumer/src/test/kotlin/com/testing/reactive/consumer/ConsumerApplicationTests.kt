@@ -2,10 +2,12 @@ package com.testing.reactive.consumer
 
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import org.reactivestreams.Publisher
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cloud.contract.stubrunner.spring.AutoConfigureStubRunner
 import org.springframework.cloud.contract.stubrunner.spring.StubRunnerProperties
+import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import java.util.function.Consumer
 
@@ -15,6 +17,13 @@ class ConsumerApplicationTests {
 
 	@Autowired
     private lateinit var client: OrderClient
+
+	@Test
+	fun `tests a subscriber API for publisher`() {
+		val publisher: Publisher<String> = Mono.just("one")
+
+		publisher
+				.subscribe()
 
     @Test
     fun `should GET all`() {
