@@ -18,13 +18,6 @@ class ConsumerApplicationTests {
 	@Autowired
     private lateinit var client: OrderClient
 
-	@Test
-	fun `tests a subscriber API for publisher`() {
-		val publisher: Publisher<String> = Mono.just("one")
-
-		publisher
-				.subscribe()
-
     @Test
     fun `should GET all`() {
         StepVerifier

@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.server.router
 import reactor.core.publisher.Mono
 
 data class Order<K>(val id: K, val item: String, val qty: Int)
+
 interface OrderRepo<K> : ReactiveMongoRepository<Order<K>, K>
 
 interface OrderService<T> {
